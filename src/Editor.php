@@ -1,6 +1,8 @@
 <?php
 namespace Nubs\Sensible;
 
+use Symfony\Component\Process\ProcessBuilder;
+
 /**
  * Provides access to the user's preferred editor command.
  *
@@ -59,5 +61,22 @@ class Editor
         $editor = $this->_environment ? $this->_environment->getenv('EDITOR') : getenv('EDITOR');
 
         return $editor ?: $this->_defaultEditorPath;
+    }
+
+    /**
+     * Edit the given file using the symfony process builder to build the
+     * symfony process to execute.
+     *
+     * @api
+     * @param \Symfony\Component\Process\ProcessBuilder $ProcessBuilder The process builder.
+     * @param string $filePath The path to the file to edit.
+     * @return \Symfony\Component\Process\Process The already-executed process.
+     */
+    public function editFile(ProcessBuilder $processBuilder, $filePath)
+    {
+        $proc = $processBuilder->setPrefix($this->get())->setArguments(array($filePath))->getProcess();
+        $proc->setTty(true)->run();
+
+        return $proc;
     }
 }

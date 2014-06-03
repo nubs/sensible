@@ -17,7 +17,8 @@
         "phpunit/phpunit": "~4.0"
     },
     "suggest": {
-        "brianium/habitat": "For better access to environment variables (e.g., for mocking)."
+        "brianium/habitat": "For better access to environment variables (e.g., for mocking).",
+        "symfony/process": "For executing the commands rather than just locating them."
     },
     "autoload": {
         "psr-4": { 
