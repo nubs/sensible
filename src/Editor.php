@@ -23,6 +23,7 @@ class Editor
     /**
      * Initialize the editor loader and configure the options
      *
+     * @api
      * @param array $options {
      *     @type string $sensibleEditorPath The path to debian's
      *         sensible-editor.  Defaults to '/usr/bin/sensible-editor'.
@@ -46,6 +47,7 @@ class Editor
     /**
      * Get the path to the user's preferred editor.
      *
+     * @api
      * @return string The path to the user's preferred editor.
      */
     public function get()
