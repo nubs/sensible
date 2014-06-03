@@ -75,7 +75,7 @@ class EditorTest extends PHPUnit_Framework_TestCase
 
         $processBuilder = $this->getMockBuilder('\Symfony\Component\Process\ProcessBuilder')->setMethods(array('setPrefix', 'setArguments', 'getProcess'))->getMock();
         $processBuilder->expects($this->once())->method('setPrefix')->with($editorPath)->will($this->returnSelf());
-        $processBuilder->expects($this->once())->method('setArguments')->with([$filePath])->will($this->returnSelf());
+        $processBuilder->expects($this->once())->method('setArguments')->with(array($filePath))->will($this->returnSelf());
         $processBuilder->expects($this->once())->method('getProcess')->will($this->returnValue($process));
 
         $this->assertSame($process, $editor->editFile($processBuilder, $filePath));
