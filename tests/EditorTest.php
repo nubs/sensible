@@ -80,4 +80,28 @@ class EditorTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($process, $editor->editFile($processBuilder, $filePath));
     }
+
+    /**
+     * Verify that editFile works.
+     *
+     * @test
+     * @covers ::editData
+     * @uses \Nubs\Sensible\Editor::__construct
+     * @uses \Nubs\Sensible\Editor::get
+     * @uses \Nubs\Sensible\Editor::editFile
+     */
+    public function editData()
+    {
+        $data = 'foo bar';
+
+        $process = $this->getMockBuilder('\Symfony\Component\Process\Process')->setMethods(array('isSuccessful'))->getMock();
+        $process->expects($this->once())->method('isSuccessful')->will($this->returnValue(true));
+
+        $processBuilder = $this->getMock('\Symfony\Component\Process\ProcessBuilder', array());
+
+        $editor = $this->getMockBuilder('\Nubs\Sensible\Editor')->setMethods(array('editFile'))->getMock();
+        $editor->expects($this->once())->method('editFile')->will($this->returnValue($process));
+
+        $this->assertSame($data, $editor->editData($processBuilder, $data));
+    }
 }

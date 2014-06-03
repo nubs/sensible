@@ -79,4 +79,28 @@ class Editor
 
         return $proc;
     }
+
+    /**
+     * Edit the given data using the symfony process builder to build the
+     * symfony process to execute.
+     *
+     * @api
+     * @param \Symfony\Component\Process\ProcessBuilder $ProcessBuilder The process builder.
+     * @param string $data The data to edit.
+     * @return string The edited data (left alone if the editor returns a failure).
+     */
+    public function editData(ProcessBuilder $processBuilder, $data)
+    {
+        $filePath = tempnam(sys_get_temp_dir(), 'sensibleEditor');
+        file_put_contents($filePath, $data);
+
+        $proc = $this->editFile($processBuilder, $filePath);
+        if ($proc->isSuccessful()) {
+            $data = file_get_contents($filePath);
+        }
+
+        unlink($filePath);
+
+        return $data;
+    }
 }
