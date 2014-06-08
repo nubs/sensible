@@ -30,8 +30,7 @@ class Editor
      *     @type string $sensibleEditorPath The path to debian's
      *         sensible-editor.  Defaults to '/usr/bin/sensible-editor'.
      *     @type string $defaultEditorPath The path to the default editor to use
-     *         if no alternative is found.  Defaults to
-     *         '/usr/bin/sensible-editor'.
+     *         if no alternative is found.  Defaults to '/bin/ed'.
      *     @type \Habitat\Environment\Environment The environment variable
      *         wrapper.  Defaults to null, which just uses the built-in getenv.
      * }
