@@ -79,7 +79,8 @@ class Pager
      * symfony process to execute.
      *
      * @api
-     * @param \Symfony\Component\Process\ProcessBuilder $processBuilder The process builder.
+     * @param \Symfony\Component\Process\ProcessBuilder $processBuilder The
+     *     process builder.
      * @param string $filePath The path to the file to view.
      * @return \Symfony\Component\Process\Process The already-executed process.
      */
@@ -96,7 +97,8 @@ class Pager
      * symfony process to execute.
      *
      * @api
-     * @param \Symfony\Component\Process\ProcessBuilder $processBuilder The process builder.
+     * @param \Symfony\Component\Process\ProcessBuilder $processBuilder The
+     *     process builder.
      * @param string $data The data to view.
      * @return \Symfony\Component\Process\Process The already-executed process.
      */
