@@ -34,8 +34,9 @@ class Editor
      *         sensible-editor.  Defaults to '/usr/bin/sensible-editor'.
      *     @type string $defaultEditorPath The path to the default editor to use
      *         if no alternative is found.  Defaults to '/bin/ed'.
-     *     @type \Habitat\Environment\Environment The environment variable
-     *         wrapper.  Defaults to null, which just uses the built-in getenv.
+     *     @type \Habitat\Environment\Environment $environment The environment
+     *         variable wrapper.  Defaults to null, which just uses the built-in
+     *         getenv.
      *     @type \Nubs\Which\Locator $commandLocator The command locator.  When
      *         provided, this helps locate commands using PATH rather than hard-
      *         coded locations.
