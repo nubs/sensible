@@ -18,7 +18,8 @@
     },
     "suggest": {
         "brianium/habitat": "For better access to environment variables (e.g., for mocking).",
-        "symfony/process": "For executing the commands rather than just locating them."
+        "symfony/process": "For executing the commands rather than just locating them.",
+        "nubs/which": "For locating commands in PATH rather than using absolute paths."
     },
     "autoload": {
         "psr-4": { 

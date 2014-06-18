@@ -14,6 +14,7 @@ class EditorTest extends PHPUnit_Framework_TestCase
      * @test
      * @covers ::__construct
      * @covers ::get
+     * @covers ::_getSensibleEditor
      */
     public function getSensibleEditor()
     {
@@ -23,17 +24,39 @@ class EditorTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Verify that the "sensible-editor" gets used and located properly.
+     *
+     * @test
+     * @covers ::__construct
+     * @covers ::get
+     * @covers ::_getSensibleEditor
+     */
+    public function getSensibleEditorWithLocator()
+    {
+        $locator = $this->getMockBuilder('\Nubs\Which\Locator')->disableOriginalConstructor()->setMethods(array('locate'))->getMock();
+        $locator->expects($this->once())->method('locate')->with('sensible-editor')->will($this->returnValue('/foo/bar/sensible-editor'));
+        $editor = new Editor(array('commandLocator' => $locator));
+
+        $this->assertSame('/foo/bar/sensible-editor', $editor->get());
+    }
+
+    /**
      * Verify that the "EDITOR" environment variable gets used.
      *
      * @test
      * @covers ::__construct
      * @covers ::get
+     * @covers ::_getSensibleEditor
      */
     public function getEnvironmentVariableEditor()
     {
         $env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(array('getenv'))->getMock();
         $env->expects($this->once())->method('getenv')->with('EDITOR')->will($this->returnValue('foo'));
-        $editor = new Editor(array('sensibleEditorPath' => 'nonexistant', 'environment' => $env));
+
+        $locator = $this->getMockBuilder('\Nubs\Which\Locator')->disableOriginalConstructor()->setMethods(array('locate'))->getMock();
+        $locator->expects($this->once())->method('locate')->with('sensible-editor')->will($this->returnValue(null));
+
+        $editor = new Editor(array('environment' => $env, 'commandLocator' => $locator));
 
         $this->assertSame('foo', $editor->get());
     }
@@ -44,6 +67,8 @@ class EditorTest extends PHPUnit_Framework_TestCase
      * @test
      * @covers ::__construct
      * @covers ::get
+     * @covers ::_getSensibleEditor
+     * @covers ::_getDefaultEditor
      */
     public function getDefaultEditor()
     {
@@ -52,6 +77,29 @@ class EditorTest extends PHPUnit_Framework_TestCase
         $editor = new Editor(array('sensibleEditorPath' => 'nonexistant', 'environment' => $env, 'defaultEditorPath' => 'bar'));
 
         $this->assertSame('bar', $editor->get());
+    }
+
+    /**
+     * Verify that the default editor is used and located properly.
+     *
+     * @test
+     * @covers ::__construct
+     * @covers ::get
+     * @covers ::_getSensibleEditor
+     * @covers ::_getDefaultEditor
+     */
+    public function getDefaultEditorWithLocator()
+    {
+        $env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(array('getenv'))->getMock();
+        $env->expects($this->once())->method('getenv')->with('EDITOR')->will($this->returnValue(null));
+
+        $locator = $this->getMockBuilder('\Nubs\Which\Locator')->disableOriginalConstructor()->setMethods(array('locate'))->getMock();
+        $locator->expects($this->at(0))->method('locate')->with('sensible-editor')->will($this->returnValue(null));
+        $locator->expects($this->at(1))->method('locate')->with('ed')->will($this->returnValue('/foo/bar/ed'));
+
+        $editor = new Editor(array('environment' => $env, 'commandLocator' => $locator));
+
+        $this->assertSame('/foo/bar/ed', $editor->get());
     }
 
     /**

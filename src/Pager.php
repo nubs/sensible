@@ -22,6 +22,9 @@ class Pager
     /** @type \Habitat\Environment\Environment The environment variable wrapper. */
     protected $_environment;
 
+    /** @type \Nubs\Which\Locator The command locator. */
+    protected $_commandLocator;
+
     /**
      * Initialize the pager loader and configure the options
      *
@@ -33,6 +36,9 @@ class Pager
      *         if no alternative is found.  Defaults to '/bin/more'.
      *     @type \Habitat\Environment\Environment The environment variable
      *         wrapper.  Defaults to null, which just uses the built-in getenv.
+     *     @type \Nubs\Which\Locator $commandLocator The command locator.  When
+     *         provided, this helps locate commands using PATH rather than hard-
+     *         coded locations.
      * }
      */
     public function __construct(array $options = array())
@@ -42,6 +48,10 @@ class Pager
 
         if (isset($options['environment'])) {
             $this->_environment = $options['environment'];
+        }
+
+        if (isset($options['commandLocator'])) {
+            $this->_commandLocator = $options['commandLocator'];
         }
     }
 
@@ -53,13 +63,14 @@ class Pager
      */
     public function get()
     {
-        if (is_executable($this->_sensiblePagerPath)) {
-            return $this->_sensiblePagerPath;
+        $sensiblePager = $this->_getSensiblePager();
+        if ($sensiblePager !== null) {
+            return $sensiblePager;
         }
 
         $pager = $this->_environment ? $this->_environment->getenv('PAGER') : getenv('PAGER');
 
-        return $pager ?: $this->_defaultPagerPath;
+        return $pager ?: $this->_getDefaultPager();
     }
 
     /**
@@ -94,5 +105,34 @@ class Pager
         $proc->setTty(true)->run();
 
         return $proc;
+    }
+
+    /**
+     * Gets the path to the sensible pager using the locator if it is set.
+     *
+     * @return string|null The path to the sensible pager or null if it isn't
+     *     available.
+     */
+    protected function _getSensiblePager()
+    {
+        if ($this->_commandLocator) {
+            return $this->_commandLocator->locate(basename($this->_sensiblePagerPath));
+        }
+
+        return is_executable($this->_sensiblePagerPath) ? $this->_sensiblePagerPath : null;
+    }
+
+    /**
+     * Gets the path to the default pager using the locator if it is set.
+     *
+     * @return string|null The path to the default pager.
+     */
+    protected function _getDefaultPager()
+    {
+        if ($this->_commandLocator) {
+            return $this->_commandLocator->locate(basename($this->_defaultPagerPath)) ?: $this->_defaultPagerPath;
+        }
+
+        return $this->_defaultPagerPath;
     }
 }

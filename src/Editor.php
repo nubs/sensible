@@ -22,6 +22,9 @@ class Editor
     /** @type \Habitat\Environment\Environment The environment variable wrapper. */
     protected $_environment;
 
+    /** @type \Nubs\Which\Locator The command locator. */
+    protected $_commandLocator;
+
     /**
      * Initialize the editor loader and configure the options
      *
@@ -33,6 +36,9 @@ class Editor
      *         if no alternative is found.  Defaults to '/bin/ed'.
      *     @type \Habitat\Environment\Environment The environment variable
      *         wrapper.  Defaults to null, which just uses the built-in getenv.
+     *     @type \Nubs\Which\Locator $commandLocator The command locator.  When
+     *         provided, this helps locate commands using PATH rather than hard-
+     *         coded locations.
      * }
      */
     public function __construct(array $options = array())
@@ -42,6 +48,10 @@ class Editor
 
         if (isset($options['environment'])) {
             $this->_environment = $options['environment'];
+        }
+
+        if (isset($options['commandLocator'])) {
+            $this->_commandLocator = $options['commandLocator'];
         }
     }
 
@@ -53,13 +63,14 @@ class Editor
      */
     public function get()
     {
-        if (is_executable($this->_sensibleEditorPath)) {
-            return $this->_sensibleEditorPath;
+        $sensibleEditor = $this->_getSensibleEditor();
+        if ($sensibleEditor !== null) {
+            return $sensibleEditor;
         }
 
         $editor = $this->_environment ? $this->_environment->getenv('EDITOR') : getenv('EDITOR');
 
-        return $editor ?: $this->_defaultEditorPath;
+        return $editor ?: $this->_getDefaultEditor();
     }
 
     /**
@@ -101,5 +112,34 @@ class Editor
         unlink($filePath);
 
         return $data;
+    }
+
+    /**
+     * Gets the path to the sensible editor using the locator if it is set.
+     *
+     * @return string|null The path to the sensible editor or null if it isn't
+     *     available.
+     */
+    protected function _getSensibleEditor()
+    {
+        if ($this->_commandLocator) {
+            return $this->_commandLocator->locate(basename($this->_sensibleEditorPath));
+        }
+
+        return is_executable($this->_sensibleEditorPath) ? $this->_sensibleEditorPath : null;
+    }
+
+    /**
+     * Gets the path to the default editor using the locator if it is set.
+     *
+     * @return string|null The path to the default editor.
+     */
+    protected function _getDefaultEditor()
+    {
+        if ($this->_commandLocator) {
+            return $this->_commandLocator->locate(basename($this->_defaultEditorPath)) ?: $this->_defaultEditorPath;
+        }
+
+        return $this->_defaultEditorPath;
     }
 }
