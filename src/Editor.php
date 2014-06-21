@@ -16,8 +16,8 @@ class Editor
     /** @type string The path to debian's sensible-editor. */
     protected $_sensibleEditorPath;
 
-    /** @type string The path to the default editor to use if no alternative is found. */
-    protected $_defaultEditorPath;
+    /** @type string[] The paths to default editor choices to use if no alternative is found. */
+    protected $_defaultEditorPath = array('/usr/bin/nano', '/usr/bin/vim', '/bin/ed');
 
     /** @type \Habitat\Environment\Environment The environment variable wrapper. */
     protected $_environment;
@@ -32,8 +32,10 @@ class Editor
      * @param array $options {
      *     @type string $sensibleEditorPath The path to debian's
      *         sensible-editor.  Defaults to '/usr/bin/sensible-editor'.
-     *     @type string $defaultEditorPath The path to the default editor to use
-     *         if no alternative is found.  Defaults to '/bin/ed'.
+     *     @type string|string[] $defaultEditorPath The paths to the default
+     *         editor choices to use if no alternative is found.  The first
+     *         editor in the list that can be located will be used.  Defaults to
+     *         ['/usr/bin/nano', '/usr/bin/vim', '/bin/ed'].
      *     @type \Habitat\Environment\Environment $environment The environment
      *         variable wrapper.  Defaults to null, which just uses the built-in
      *         getenv.
@@ -45,7 +47,10 @@ class Editor
     public function __construct(array $options = array())
     {
         $this->_sensibleEditorPath = isset($options['sensibleEditorPath']) ? $options['sensibleEditorPath'] : '/usr/bin/sensible-editor';
-        $this->_defaultEditorPath = isset($options['defaultEditorPath']) ? $options['defaultEditorPath'] : '/bin/ed';
+
+        if (isset($options['defaultEditorPath'])) {
+            $this->_defaultEditorPath = array_values((array)$options['defaultEditorPath']);
+        }
 
         if (isset($options['environment'])) {
             $this->_environment = $options['environment'];
@@ -141,9 +146,14 @@ class Editor
     protected function _getDefaultEditor()
     {
         if ($this->_commandLocator) {
-            return $this->_commandLocator->locate(basename($this->_defaultEditorPath)) ?: $this->_defaultEditorPath;
+            foreach ($this->_defaultEditorPath as $editorPath) {
+                $location = $this->_commandLocator->locate(basename($editorPath));
+                if ($location !== null) {
+                    return $location;
+                }
+            }
         }
 
-        return $this->_defaultEditorPath;
+        return empty($this->_defaultEditorPath) ? null : $this->_defaultEditorPath[count($this->_defaultEditorPath) - 1];
     }
 }

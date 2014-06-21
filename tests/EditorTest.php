@@ -95,11 +95,37 @@ class EditorTest extends PHPUnit_Framework_TestCase
 
         $locator = $this->getMockBuilder('\Nubs\Which\Locator')->disableOriginalConstructor()->setMethods(array('locate'))->getMock();
         $locator->expects($this->at(0))->method('locate')->with('sensible-editor')->will($this->returnValue(null));
-        $locator->expects($this->at(1))->method('locate')->with('ed')->will($this->returnValue('/foo/bar/ed'));
+        $locator->expects($this->at(1))->method('locate')->with('nano')->will($this->returnValue(null));
+        $locator->expects($this->at(2))->method('locate')->with('vim')->will($this->returnValue('/foo/bar/vim'));
 
         $editor = new Editor(array('environment' => $env, 'commandLocator' => $locator));
 
-        $this->assertSame('/foo/bar/ed', $editor->get());
+        $this->assertSame('/foo/bar/vim', $editor->get());
+    }
+
+    /**
+     * Verify that an editor is returned even when none can be located.
+     *
+     * @test
+     * @covers ::__construct
+     * @covers ::get
+     * @covers ::_getSensibleEditor
+     * @covers ::_getDefaultEditor
+     */
+    public function getDefaultEditorWhenNoneLocated()
+    {
+        $env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(array('getenv'))->getMock();
+        $env->expects($this->once())->method('getenv')->with('EDITOR')->will($this->returnValue(null));
+
+        $locator = $this->getMockBuilder('\Nubs\Which\Locator')->disableOriginalConstructor()->setMethods(array('locate'))->getMock();
+        $locator->expects($this->at(0))->method('locate')->with('sensible-editor')->will($this->returnValue(null));
+        $locator->expects($this->at(1))->method('locate')->with('nano')->will($this->returnValue(null));
+        $locator->expects($this->at(2))->method('locate')->with('vim')->will($this->returnValue(null));
+        $locator->expects($this->at(3))->method('locate')->with('ed')->will($this->returnValue(null));
+
+        $editor = new Editor(array('environment' => $env, 'commandLocator' => $locator));
+
+        $this->assertSame('/bin/ed', $editor->get());
     }
 
     /**
