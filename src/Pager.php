@@ -16,8 +16,8 @@ class Pager
     /** @type string The path to debian's sensible-pager. */
     protected $_sensiblePagerPath;
 
-    /** @type string The path to the default pager to use if no alternative is found. */
-    protected $_defaultPagerPath;
+    /** @type string[] The paths to default pager choices to use if no alternative is found. */
+    protected $_defaultPagerPath = array('/usr/bin/less', '/bin/more');
 
     /** @type \Habitat\Environment\Environment The environment variable wrapper. */
     protected $_environment;
@@ -32,8 +32,10 @@ class Pager
      * @param array $options {
      *     @type string $sensiblePagerPath The path to debian's sensible-pager.
      *         Defaults to '/usr/bin/sensible-pager'.
-     *     @type string $defaultPagerPath The path to the default pager to use
-     *         if no alternative is found.  Defaults to '/bin/more'.
+     *     @type string|string[] $defaultPagerPath The paths to the default
+     *         pager choices to use if no alternative is found.  The first pager
+     *         in the list that can be located will be used.  Defaults to
+     *         ['/usr/bin/less', '/bin/more'].
      *     @type \Habitat\Environment\Environment $environment The environment
      *         variable wrapper.  Defaults to null, which just uses the built-in
      *         getenv.
@@ -45,7 +47,10 @@ class Pager
     public function __construct(array $options = array())
     {
         $this->_sensiblePagerPath = isset($options['sensiblePagerPath']) ?  $options['sensiblePagerPath'] : '/usr/bin/sensible-pager';
-        $this->_defaultPagerPath = isset($options['defaultPagerPath']) ?  $options['defaultPagerPath'] : '/bin/more';
+
+        if (isset($options['defaultPagerPath'])) {
+            $this->_defaultPagerPath = array_values((array)$options['defaultPagerPath']);
+        }
 
         if (isset($options['environment'])) {
             $this->_environment = $options['environment'];
@@ -133,9 +138,14 @@ class Pager
     protected function _getDefaultPager()
     {
         if ($this->_commandLocator) {
-            return $this->_commandLocator->locate(basename($this->_defaultPagerPath)) ?: $this->_defaultPagerPath;
+            foreach ($this->_defaultPagerPath as $pagerPath) {
+                $location = $this->_commandLocator->locate(basename($pagerPath));
+                if ($location !== null) {
+                    return $location;
+                }
+            }
         }
 
-        return $this->_defaultPagerPath;
+        return empty($this->_defaultPagerPath) ? null : $this->_defaultPagerPath[count($this->_defaultPagerPath) - 1];
     }
 }

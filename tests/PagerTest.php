@@ -95,11 +95,36 @@ class PagerTest extends PHPUnit_Framework_TestCase
 
         $locator = $this->getMockBuilder('\Nubs\Which\Locator')->disableOriginalConstructor()->setMethods(array('locate'))->getMock();
         $locator->expects($this->at(0))->method('locate')->with('sensible-pager')->will($this->returnValue(null));
-        $locator->expects($this->at(1))->method('locate')->with('more')->will($this->returnValue('/foo/bar/more'));
+        $locator->expects($this->at(1))->method('locate')->with('less')->will($this->returnValue(null));
+        $locator->expects($this->at(2))->method('locate')->with('more')->will($this->returnValue('/foo/bar/more'));
 
         $pager = new Pager(array('environment' => $env, 'commandLocator' => $locator));
 
         $this->assertSame('/foo/bar/more', $pager->get());
+    }
+
+    /**
+     * Verify that a pager is returned even when none can be located.
+     *
+     * @test
+     * @covers ::__construct
+     * @covers ::get
+     * @covers ::_getSensiblePager
+     * @covers ::_getDefaultPager
+     */
+    public function getDefaultPagerWhenNoneLocated()
+    {
+        $env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(array('getenv'))->getMock();
+        $env->expects($this->once())->method('getenv')->with('PAGER')->will($this->returnValue(null));
+
+        $locator = $this->getMockBuilder('\Nubs\Which\Locator')->disableOriginalConstructor()->setMethods(array('locate'))->getMock();
+        $locator->expects($this->at(0))->method('locate')->with('sensible-pager')->will($this->returnValue(null));
+        $locator->expects($this->at(1))->method('locate')->with('less')->will($this->returnValue(null));
+        $locator->expects($this->at(2))->method('locate')->with('more')->will($this->returnValue(null));
+
+        $pager = new Pager(array('environment' => $env, 'commandLocator' => $locator));
+
+        $this->assertSame('/bin/more', $pager->get());
     }
 
     /**
