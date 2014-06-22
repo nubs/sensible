@@ -40,7 +40,7 @@ class Browser
      */
     public function __construct(array $options = array())
     {
-        $this->_sensibleBrowserPath = isset($options['sensibleBrowserPath']) ?  $options['sensibleBrowserPath'] : '/usr/bin/sensible-browser';
+        $this->_sensibleBrowserPath = isset($options['sensibleBrowserPath']) ? $options['sensibleBrowserPath'] : '/usr/bin/sensible-browser';
 
         if (isset($options['defaultBrowserPath'])) {
             $this->_defaultBrowserPath = array_values((array)$options['defaultBrowserPath']);

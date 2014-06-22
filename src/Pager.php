@@ -46,7 +46,7 @@ class Pager
      */
     public function __construct(array $options = array())
     {
-        $this->_sensiblePagerPath = isset($options['sensiblePagerPath']) ?  $options['sensiblePagerPath'] : '/usr/bin/sensible-pager';
+        $this->_sensiblePagerPath = isset($options['sensiblePagerPath']) ? $options['sensiblePagerPath'] : '/usr/bin/sensible-pager';
 
         if (isset($options['defaultPagerPath'])) {
             $this->_defaultPagerPath = array_values((array)$options['defaultPagerPath']);
