@@ -1,16 +1,15 @@
 # sensible
 A PHP library for finding sensible user programs, like editor, pager, and browser.
 
-[![Build Status](https://travis-ci.org/nubs/sensible.png)](https://travis-ci.org/nubs/sensible)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nubs/sensible/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/nubs/sensible/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/nubs/sensible/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/nubs/sensible/?branch=master)
+[![Build Status](http://img.shields.io/travis/nubs/sensible.svg?style=flat)](https://travis-ci.org/nubs/sensible)
+[![Scrutinizer Code Quality](http://img.shields.io/scrutinizer/g/nubs/sensible.svg?style=flat)](https://scrutinizer-ci.com/g/nubs/sensible/)
+[![Code Coverage](http://img.shields.io/scrutinizer/coverage/g/nubs/sensible.svg?style=flat)](https://scrutinizer-ci.com/g/nubs/sensible/)
 
-[![Latest Stable Version](https://poser.pugx.org/nubs/sensible/v/stable.png)](https://packagist.org/packages/nubs/sensible)
-[![Total Downloads](https://poser.pugx.org/nubs/sensible/downloads.png)](https://packagist.org/packages/nubs/sensible)
-[![Latest Unstable Version](https://poser.pugx.org/nubs/sensible/v/unstable.png)](https://packagist.org/packages/nubs/sensible)
-[![License](https://poser.pugx.org/nubs/sensible/license.png)](https://packagist.org/packages/nubs/sensible)
+[![Latest Stable Version](http://img.shields.io/packagist/v/nubs/sensible.svg?style=flat)](https://packagist.org/packages/nubs/sensible)
+[![Total Downloads](http://img.shields.io/packagist/dt/nubs/sensible.svg?style=flat)](https://packagist.org/packages/nubs/sensible)
+[![License](http://img.shields.io/packagist/l/nubs/sensible.svg?style=flat)](https://packagist.org/packages/nubs/sensible)
 
-[![Dependency Status](https://www.versioneye.com/user/projects/53866d7014c15895cb000053/badge.svg)](https://www.versioneye.com/user/projects/53866d7014c15895cb000053)
+[![Dependency Status](https://www.versioneye.com/user/projects/53866d7014c15895cb000053/badge.svg?style=flat)](https://www.versioneye.com/user/projects/53866d7014c15895cb000053)
 
 ## Requirements
 This library requires PHP 5.3, or newer.
