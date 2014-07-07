@@ -142,11 +142,11 @@ class PagerTest extends PHPUnit_Framework_TestCase
         $pager = $this->getMockBuilder('\Nubs\Sensible\Pager')->setMethods(array('get'))->getMock();
         $pager->expects($this->once())->method('get')->will($this->returnValue($pagerPath));
 
-        $process = $this->getMockBuilder('\Symfony\Component\Process\Process')->setMethods(array('setTty', 'run'))->getMock();
+        $process = $this->getMockBuilder('\Symfony\Component\Process\Process')->disableOriginalConstructor()->setMethods(array('setTty', 'run'))->getMock();
         $process->expects($this->once())->method('setTty')->with(true)->will($this->returnSelf());
         $process->expects($this->once())->method('run')->will($this->returnValue(0));
 
-        $processBuilder = $this->getMockBuilder('\Symfony\Component\Process\ProcessBuilder')->setMethods(array('setPrefix', 'setArguments', 'getProcess'))->getMock();
+        $processBuilder = $this->getMockBuilder('\Symfony\Component\Process\ProcessBuilder')->disableOriginalConstructor()->setMethods(array('setPrefix', 'setArguments', 'getProcess'))->getMock();
         $processBuilder->expects($this->once())->method('setPrefix')->with($pagerPath)->will($this->returnSelf());
         $processBuilder->expects($this->once())->method('setArguments')->with(array($filePath))->will($this->returnSelf());
         $processBuilder->expects($this->once())->method('getProcess')->will($this->returnValue($process));
@@ -169,11 +169,11 @@ class PagerTest extends PHPUnit_Framework_TestCase
         $pager = $this->getMockBuilder('\Nubs\Sensible\Pager')->setMethods(array('get'))->getMock();
         $pager->expects($this->once())->method('get')->will($this->returnValue($pagerPath));
 
-        $process = $this->getMockBuilder('\Symfony\Component\Process\Process')->setMethods(array('setTty', 'run'))->getMock();
+        $process = $this->getMockBuilder('\Symfony\Component\Process\Process')->disableOriginalConstructor()->setMethods(array('setTty', 'run'))->getMock();
         $process->expects($this->once())->method('setTty')->with(true)->will($this->returnSelf());
         $process->expects($this->once())->method('run')->will($this->returnValue(0));
 
-        $processBuilder = $this->getMockBuilder('\Symfony\Component\Process\ProcessBuilder')->setMethods(array('setPrefix', 'setInput', 'getProcess'))->getMock();
+        $processBuilder = $this->getMockBuilder('\Symfony\Component\Process\ProcessBuilder')->disableOriginalConstructor()->setMethods(array('setPrefix', 'setInput', 'getProcess'))->getMock();
         $processBuilder->expects($this->once())->method('setPrefix')->with($pagerPath)->will($this->returnSelf());
         $processBuilder->expects($this->once())->method('setInput')->with($data)->will($this->returnSelf());
         $processBuilder->expects($this->once())->method('getProcess')->will($this->returnValue($process));

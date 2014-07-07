@@ -143,11 +143,11 @@ class EditorTest extends PHPUnit_Framework_TestCase
         $editor = $this->getMockBuilder('\Nubs\Sensible\Editor')->setMethods(array('get'))->getMock();
         $editor->expects($this->once())->method('get')->will($this->returnValue($editorPath));
 
-        $process = $this->getMockBuilder('\Symfony\Component\Process\Process')->setMethods(array('setTty', 'run'))->getMock();
+        $process = $this->getMockBuilder('\Symfony\Component\Process\Process')->disableOriginalConstructor()->setMethods(array('setTty', 'run'))->getMock();
         $process->expects($this->once())->method('setTty')->with(true)->will($this->returnSelf());
         $process->expects($this->once())->method('run')->will($this->returnValue(0));
 
-        $processBuilder = $this->getMockBuilder('\Symfony\Component\Process\ProcessBuilder')->setMethods(array('setPrefix', 'setArguments', 'getProcess'))->getMock();
+        $processBuilder = $this->getMockBuilder('\Symfony\Component\Process\ProcessBuilder')->disableOriginalConstructor()->setMethods(array('setPrefix', 'setArguments', 'getProcess'))->getMock();
         $processBuilder->expects($this->once())->method('setPrefix')->with($editorPath)->will($this->returnSelf());
         $processBuilder->expects($this->once())->method('setArguments')->with(array($filePath))->will($this->returnSelf());
         $processBuilder->expects($this->once())->method('getProcess')->will($this->returnValue($process));
@@ -168,10 +168,10 @@ class EditorTest extends PHPUnit_Framework_TestCase
     {
         $data = 'foo bar';
 
-        $process = $this->getMockBuilder('\Symfony\Component\Process\Process')->setMethods(array('isSuccessful'))->getMock();
+        $process = $this->getMockBuilder('\Symfony\Component\Process\Process')->disableOriginalConstructor()->setMethods(array('isSuccessful'))->getMock();
         $process->expects($this->once())->method('isSuccessful')->will($this->returnValue(true));
 
-        $processBuilder = $this->getMock('\Symfony\Component\Process\ProcessBuilder', array());
+        $processBuilder = $this->getMockBuilder('\Symfony\Component\Process\ProcessBuilder')->disableOriginalConstructor()->setMethods(array())->getMock();
 
         $editor = $this->getMockBuilder('\Nubs\Sensible\Editor')->setMethods(array('editFile'))->getMock();
         $editor->expects($this->once())->method('editFile')->will($this->returnValue($process));
