@@ -68,6 +68,24 @@ class Browser
     }
 
     /**
+     * View the given URI using the symfony process builder to build the symfony
+     * process to execute.
+     *
+     * @api
+     * @param \Symfony\Component\Process\ProcessBuilder $processBuilder The
+     *     process builder.
+     * @param string $uri The URI to view.
+     * @return \Symfony\Component\Process\Process The already-executed process.
+     */
+    public function viewURI(ProcessBuilder $processBuilder, $uri)
+    {
+        $proc = $processBuilder->setPrefix($this->get())->setArguments(array($uri))->getProcess();
+        $proc->setTty(true)->run();
+
+        return $proc;
+    }
+
+    /**
      * Gets the path to the sensible browser using the locator if it is set.
      *
      * @return string|null The path to the sensible browser or null if it isn't

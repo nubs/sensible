@@ -101,4 +101,31 @@ class BrowserTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('/usr/bin/elinks', $browser->get());
     }
+
+    /**
+     * Verify that viewURI works.
+     *
+     * @test
+     * @covers ::viewURI
+     * @uses \Nubs\Sensible\Browser::__construct
+     * @uses \Nubs\Sensible\Browser::get
+     */
+    public function viewURI()
+    {
+        $browserPath = '/the/browser';
+        $uri = 'http://the.uri';
+        $browser = $this->getMockBuilder('\Nubs\Sensible\Browser')->setMethods(array('get'))->getMock();
+        $browser->expects($this->once())->method('get')->will($this->returnValue($browserPath));
+
+        $process = $this->getMockBuilder('\Symfony\Component\Process\Process')->disableOriginalConstructor()->setMethods(array('setTty', 'run'))->getMock();
+        $process->expects($this->once())->method('setTty')->with(true)->will($this->returnSelf());
+        $process->expects($this->once())->method('run')->will($this->returnValue(0));
+
+        $processBuilder = $this->getMockBuilder('\Symfony\Component\Process\ProcessBuilder')->disableOriginalConstructor()->setMethods(array('setPrefix', 'setArguments', 'getProcess'))->getMock();
+        $processBuilder->expects($this->once())->method('setPrefix')->with($browserPath)->will($this->returnSelf());
+        $processBuilder->expects($this->once())->method('setArguments')->with(array($uri))->will($this->returnSelf());
+        $processBuilder->expects($this->once())->method('getProcess')->will($this->returnValue($process));
+
+        $this->assertSame($process, $browser->viewURI($processBuilder, $uri));
+    }
 }
