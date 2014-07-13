@@ -12,8 +12,8 @@ use Symfony\Component\Process\ProcessBuilder;
  */
 class Editor
 {
-    /** @type string[] The paths to potential editors. */
-    protected $_editorPaths;
+    /** @type string[] The names of potential editors. */
+    protected $_editors;
 
     /** @type \Habitat\Environment\Environment The environment variable wrapper. */
     protected $_environment;
@@ -27,16 +27,16 @@ class Editor
      * @api
      * @param \Nubs\Which\Locator $commandLocator The command locator.  This
      *     helps locate commands using PATH.
-     * @param string|string[] $editorPaths The names to the potential editors.
+     * @param string|string[] $editors The names to the potential editors.
      *     The first command in the list that can be located will be used.
      * @param \Habitat\Environment\Environment $environment The environment
      *     variable wrapper.  Defaults to null, which just uses the built-in
      *     getenv.
      */
-    public function __construct(CommandLocator $commandLocator, $editorPaths = ['sensible-editor', 'nano', 'vim', 'ed'], Environment $environment = null)
+    public function __construct(CommandLocator $commandLocator, $editors = ['sensible-editor', 'nano', 'vim', 'ed'], Environment $environment = null)
     {
         $this->_commandLocator = $commandLocator;
-        $this->_editorPaths = array_values((array)$editorPaths);
+        $this->_editors = array_values((array)$editors);
         $this->_environment = $environment;
     }
 
@@ -105,8 +105,8 @@ class Editor
      */
     protected function _getDefaultEditor()
     {
-        foreach ($this->_editorPaths as $editorPath) {
-            $location = $this->_commandLocator->locate(basename($editorPath));
+        foreach ($this->_editors as $editor) {
+            $location = $this->_commandLocator->locate(basename($editor));
             if ($location !== null) {
                 return $location;
             }

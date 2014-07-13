@@ -11,8 +11,8 @@ use Symfony\Component\Process\ProcessBuilder;
  */
 class Browser
 {
-    /** @type string[] The paths to potential browsers. */
-    protected $_browserPaths;
+    /** @type string[] The names of potential browsers. */
+    protected $_browsers;
 
     /** @type \Nubs\Which\Locator The command locator. */
     protected $_commandLocator;
@@ -23,13 +23,13 @@ class Browser
      * @api
      * @param \Nubs\Which\Locator $commandLocator The command locator.  This
      *     helps locate commands using PATH.
-     * @param string|string[] $browserPaths The names to the potential browsers.
+     * @param string|string[] $browsers The names to the potential browsers.
      *     The first command in the list that can be located will be used.
      */
-    public function __construct(CommandLocator $commandLocator, $browserPaths = ['sensible-browser', 'firefox', 'chromium-browser', 'chrome', 'elinks'])
+    public function __construct(CommandLocator $commandLocator, $browsers = ['sensible-browser', 'firefox', 'chromium-browser', 'chrome', 'elinks'])
     {
         $this->_commandLocator = $commandLocator;
-        $this->_browserPaths = array_values((array)$browserPaths);
+        $this->_browsers = array_values((array)$browsers);
     }
 
     /**
@@ -41,8 +41,8 @@ class Browser
      */
     public function get()
     {
-        foreach ($this->_browserPaths as $browserPath) {
-            $location = $this->_commandLocator->locate(basename($browserPath));
+        foreach ($this->_browsers as $browser) {
+            $location = $this->_commandLocator->locate(basename($browser));
             if ($location !== null) {
                 return $location;
             }

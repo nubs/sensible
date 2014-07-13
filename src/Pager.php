@@ -12,8 +12,8 @@ use Symfony\Component\Process\ProcessBuilder;
  */
 class Pager
 {
-    /** @type string[] The paths to potential pagers. */
-    protected $_pagerPaths;
+    /** @type string[] The names of potential pagers. */
+    protected $_pagers;
 
     /** @type \Habitat\Environment\Environment The environment variable wrapper. */
     protected $_environment;
@@ -27,16 +27,16 @@ class Pager
      * @api
      * @param \Nubs\Which\Locator $commandLocator The command locator.  This
      *     helps locate commands using PATH.
-     * @param string|string[] $pagerPaths The names to the potential pagers.
+     * @param string|string[] $pagers The names to the potential pagers.
      *     The first command in the list that can be located will be used.
      * @param \Habitat\Environment\Environment $environment The environment
      *     variable wrapper.  Defaults to null, which just uses the built-in
      *     getenv.
      */
-    public function __construct(CommandLocator $commandLocator, $pagerPaths = ['sensible-pager', 'less', 'more'], Environment $environment = null)
+    public function __construct(CommandLocator $commandLocator, $pagers = ['sensible-pager', 'less', 'more'], Environment $environment = null)
     {
         $this->_commandLocator = $commandLocator;
-        $this->_pagerPaths = array_values((array)$pagerPaths);
+        $this->_pagers = array_values((array)$pagers);
         $this->_environment = $environment;
     }
 
@@ -97,8 +97,8 @@ class Pager
      */
     protected function _getDefaultPager()
     {
-        foreach ($this->_pagerPaths as $pagerPath) {
-            $location = $this->_commandLocator->locate(basename($pagerPath));
+        foreach ($this->_pagers as $pager) {
+            $location = $this->_commandLocator->locate(basename($pager));
             if ($location !== null) {
                 return $location;
             }
