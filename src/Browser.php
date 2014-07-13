@@ -13,7 +13,7 @@ use Symfony\Component\Process\ProcessBuilder;
 class Browser
 {
     /** @type string[] The paths to default browser choices to use if no alternative is found. */
-    protected $_defaultBrowserPath = array('/usr/bin/sensible-browser', '/usr/bin/firefox', '/usr/bin/chromium-browser', '/usr/bin/chrome', '/usr/bin/elinks');
+    protected $_defaultBrowserPath = array('sensible-browser', 'firefox', 'chromium-browser', 'chrome', 'elinks');
 
     /** @type \Nubs\Which\Locator The command locator. */
     protected $_commandLocator;
@@ -28,9 +28,8 @@ class Browser
      *     @type string|string[] $defaultBrowserPath The paths to the default
      *         browser choices to use if no alternative is found.  The first
      *         browser in the list that can be located will be used.  Defaults
-     *         to ['/usr/bin/sensible-browser', '/usr/bin/firefox',
-     *         '/usr/bin/chromium-browser', '/usr/bin/chrome',
-     *         '/usr/bin/elinks'].
+     *         to ['sensible-browser', 'firefox', 'chromium-browser', 'chrome',
+     *         'elinks'].
      * }
      */
     public function __construct(CommandLocator $commandLocator, array $options = array())

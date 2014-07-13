@@ -14,7 +14,7 @@ use Symfony\Component\Process\ProcessBuilder;
 class Editor
 {
     /** @type string[] The paths to default editor choices to use if no alternative is found. */
-    protected $_defaultEditorPath = array('/usr/bin/sensible-editor', '/usr/bin/nano', '/usr/bin/vim', '/bin/ed');
+    protected $_defaultEditorPath = array('sensible-editor', 'nano', 'vim', 'ed');
 
     /** @type \Habitat\Environment\Environment The environment variable wrapper. */
     protected $_environment;
@@ -32,8 +32,7 @@ class Editor
      *     @type string|string[] $defaultEditorPath The paths to the default
      *         editor choices to use if no alternative is found.  The first
      *         editor in the list that can be located will be used.  Defaults to
-     *         ['/usr/bin/sensible-editor', '/usr/bin/nano', '/usr/bin/vim',
-     *         '/bin/ed'].
+     *         ['sensible-editor', 'nano', 'vim', 'ed'].
      *     @type \Habitat\Environment\Environment $environment The environment
      *         variable wrapper.  Defaults to null, which just uses the built-in
      *         getenv.

@@ -14,7 +14,7 @@ use Symfony\Component\Process\ProcessBuilder;
 class Pager
 {
     /** @type string[] The paths to default pager choices to use if no alternative is found. */
-    protected $_defaultPagerPath = array('/usr/bin/sensible-pager', '/usr/bin/less', '/bin/more');
+    protected $_defaultPagerPath = array('sensible-pager', 'less', 'more');
 
     /** @type \Habitat\Environment\Environment The environment variable wrapper. */
     protected $_environment;
@@ -32,7 +32,7 @@ class Pager
      *     @type string|string[] $defaultPagerPath The paths to the default
      *         pager choices to use if no alternative is found.  The first pager
      *         in the list that can be located will be used.  Defaults to
-     *         ['/usr/bin/sensible-pager', '/usr/bin/less', '/bin/more'].
+     *         ['sensible-pager', 'less', 'more'].
      *     @type \Habitat\Environment\Environment $environment The environment
      *         variable wrapper.  Defaults to null, which just uses the built-in
      *         getenv.
