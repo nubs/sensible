@@ -12,7 +12,7 @@ class BrowserTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->_commandLocator = $this->getMockBuilder('\Nubs\Which\Locator')->disableOriginalConstructor()->setMethods(array('locate'))->getMock();
+        $this->_commandLocator = $this->getMockBuilder('\Nubs\Which\Locator')->disableOriginalConstructor()->setMethods(['locate'])->getMock();
     }
 
     /**
@@ -43,7 +43,7 @@ class BrowserTest extends PHPUnit_Framework_TestCase
         $this->_commandLocator->expects($this->at(1))->method('locate')->with('b')->will($this->returnValue(null));
         $this->_commandLocator->expects($this->at(2))->method('locate')->with('c')->will($this->returnValue('/foo/bar/c'));
 
-        $browser = new Browser($this->_commandLocator, array('a', 'b', 'c'));
+        $browser = new Browser($this->_commandLocator, ['a', 'b', 'c']);
 
         $this->assertSame('/foo/bar/c', $browser->get());
     }
@@ -61,7 +61,7 @@ class BrowserTest extends PHPUnit_Framework_TestCase
         $this->_commandLocator->expects($this->at(1))->method('locate')->with('b')->will($this->returnValue(null));
         $this->_commandLocator->expects($this->at(2))->method('locate')->with('c')->will($this->returnValue(null));
 
-        $browser = new Browser($this->_commandLocator, array('a', 'b', 'c'));
+        $browser = new Browser($this->_commandLocator, ['a', 'b', 'c']);
 
         $this->assertNull($browser->get());
     }
@@ -78,16 +78,16 @@ class BrowserTest extends PHPUnit_Framework_TestCase
     {
         $browserPath = '/the/browser';
         $uri = 'http://the.uri';
-        $browser = $this->getMockBuilder('\Nubs\Sensible\Browser')->disableOriginalConstructor()->setMethods(array('get'))->getMock();
+        $browser = $this->getMockBuilder('\Nubs\Sensible\Browser')->disableOriginalConstructor()->setMethods(['get'])->getMock();
         $browser->expects($this->once())->method('get')->will($this->returnValue($browserPath));
 
-        $process = $this->getMockBuilder('\Symfony\Component\Process\Process')->disableOriginalConstructor()->setMethods(array('setTty', 'run'))->getMock();
+        $process = $this->getMockBuilder('\Symfony\Component\Process\Process')->disableOriginalConstructor()->setMethods(['setTty', 'run'])->getMock();
         $process->expects($this->once())->method('setTty')->with(true)->will($this->returnSelf());
         $process->expects($this->once())->method('run')->will($this->returnValue(0));
 
-        $processBuilder = $this->getMockBuilder('\Symfony\Component\Process\ProcessBuilder')->disableOriginalConstructor()->setMethods(array('setPrefix', 'setArguments', 'getProcess'))->getMock();
+        $processBuilder = $this->getMockBuilder('\Symfony\Component\Process\ProcessBuilder')->disableOriginalConstructor()->setMethods(['setPrefix', 'setArguments', 'getProcess'])->getMock();
         $processBuilder->expects($this->once())->method('setPrefix')->with($browserPath)->will($this->returnSelf());
-        $processBuilder->expects($this->once())->method('setArguments')->with(array($uri))->will($this->returnSelf());
+        $processBuilder->expects($this->once())->method('setArguments')->with([$uri])->will($this->returnSelf());
         $processBuilder->expects($this->once())->method('getProcess')->will($this->returnValue($process));
 
         $this->assertSame($process, $browser->viewURI($processBuilder, $uri));

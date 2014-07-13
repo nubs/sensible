@@ -33,7 +33,7 @@ class Pager
      *     variable wrapper.  Defaults to null, which just uses the built-in
      *     getenv.
      */
-    public function __construct(CommandLocator $commandLocator, $pagerPaths = array('sensible-pager', 'less', 'more'), Environment $environment = null)
+    public function __construct(CommandLocator $commandLocator, $pagerPaths = ['sensible-pager', 'less', 'more'], Environment $environment = null)
     {
         $this->_commandLocator = $commandLocator;
         $this->_pagerPaths = array_values((array)$pagerPaths);
@@ -66,7 +66,7 @@ class Pager
      */
     public function viewFile(ProcessBuilder $processBuilder, $filePath)
     {
-        $proc = $processBuilder->setPrefix($this->get())->setArguments(array($filePath))->getProcess();
+        $proc = $processBuilder->setPrefix($this->get())->setArguments([$filePath])->getProcess();
         $proc->setTty(true)->run();
 
         return $proc;

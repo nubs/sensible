@@ -33,7 +33,7 @@ class Editor
      *     variable wrapper.  Defaults to null, which just uses the built-in
      *     getenv.
      */
-    public function __construct(CommandLocator $commandLocator, $editorPaths = array('sensible-editor', 'nano', 'vim', 'ed'), Environment $environment = null)
+    public function __construct(CommandLocator $commandLocator, $editorPaths = ['sensible-editor', 'nano', 'vim', 'ed'], Environment $environment = null)
     {
         $this->_commandLocator = $commandLocator;
         $this->_editorPaths = array_values((array)$editorPaths);
@@ -66,7 +66,7 @@ class Editor
      */
     public function editFile(ProcessBuilder $processBuilder, $filePath)
     {
-        $proc = $processBuilder->setPrefix($this->get())->setArguments(array($filePath))->getProcess();
+        $proc = $processBuilder->setPrefix($this->get())->setArguments([$filePath])->getProcess();
         $proc->setTty(true)->run();
 
         return $proc;

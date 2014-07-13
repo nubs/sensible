@@ -26,7 +26,7 @@ class Browser
      * @param string|string[] $browserPaths The names to the potential browsers.
      *     The first command in the list that can be located will be used.
      */
-    public function __construct(CommandLocator $commandLocator, $browserPaths = array('sensible-browser', 'firefox', 'chromium-browser', 'chrome', 'elinks'))
+    public function __construct(CommandLocator $commandLocator, $browserPaths = ['sensible-browser', 'firefox', 'chromium-browser', 'chrome', 'elinks'])
     {
         $this->_commandLocator = $commandLocator;
         $this->_browserPaths = array_values((array)$browserPaths);
@@ -63,7 +63,7 @@ class Browser
      */
     public function viewURI(ProcessBuilder $processBuilder, $uri)
     {
-        $proc = $processBuilder->setPrefix($this->get())->setArguments(array($uri))->getProcess();
+        $proc = $processBuilder->setPrefix($this->get())->setArguments([$uri])->getProcess();
         $proc->setTty(true)->run();
 
         return $proc;

@@ -13,8 +13,8 @@ class PagerTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->_commandLocator = $this->getMockBuilder('\Nubs\Which\Locator')->disableOriginalConstructor()->setMethods(array('locate'))->getMock();
-        $this->_env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(array('getenv'))->getMock();
+        $this->_commandLocator = $this->getMockBuilder('\Nubs\Which\Locator')->disableOriginalConstructor()->setMethods(['locate'])->getMock();
+        $this->_env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(['getenv'])->getMock();
     }
 
     /**
@@ -28,7 +28,7 @@ class PagerTest extends PHPUnit_Framework_TestCase
     {
         $this->_env->expects($this->once())->method('getenv')->with('PAGER')->will($this->returnValue('foo'));
 
-        $pager = new Pager($this->_commandLocator, array(), $this->_env);
+        $pager = new Pager($this->_commandLocator, [], $this->_env);
 
         $this->assertSame('foo', $pager->get());
     }
@@ -68,7 +68,7 @@ class PagerTest extends PHPUnit_Framework_TestCase
         $this->_commandLocator->expects($this->at(1))->method('locate')->with('b')->will($this->returnValue(null));
         $this->_commandLocator->expects($this->at(2))->method('locate')->with('c')->will($this->returnValue('/foo/bar/c'));
 
-        $pager = new Pager($this->_commandLocator, array('a', 'b', 'c'), $this->_env);
+        $pager = new Pager($this->_commandLocator, ['a', 'b', 'c'], $this->_env);
 
         $this->assertSame('/foo/bar/c', $pager->get());
     }
@@ -89,7 +89,7 @@ class PagerTest extends PHPUnit_Framework_TestCase
         $this->_commandLocator->expects($this->at(1))->method('locate')->with('b')->will($this->returnValue(null));
         $this->_commandLocator->expects($this->at(2))->method('locate')->with('c')->will($this->returnValue(null));
 
-        $pager = new Pager($this->_commandLocator, array('a', 'b', 'c'), $this->_env);
+        $pager = new Pager($this->_commandLocator, ['a', 'b', 'c'], $this->_env);
 
         $this->assertNull($pager->get());
     }
@@ -106,16 +106,16 @@ class PagerTest extends PHPUnit_Framework_TestCase
     {
         $pagerPath = '/the/pager';
         $filePath = '/the/file';
-        $pager = $this->getMockBuilder('\Nubs\Sensible\Pager')->disableOriginalConstructor()->setMethods(array('get'))->getMock();
+        $pager = $this->getMockBuilder('\Nubs\Sensible\Pager')->disableOriginalConstructor()->setMethods(['get'])->getMock();
         $pager->expects($this->once())->method('get')->will($this->returnValue($pagerPath));
 
-        $process = $this->getMockBuilder('\Symfony\Component\Process\Process')->disableOriginalConstructor()->setMethods(array('setTty', 'run'))->getMock();
+        $process = $this->getMockBuilder('\Symfony\Component\Process\Process')->disableOriginalConstructor()->setMethods(['setTty', 'run'])->getMock();
         $process->expects($this->once())->method('setTty')->with(true)->will($this->returnSelf());
         $process->expects($this->once())->method('run')->will($this->returnValue(0));
 
-        $processBuilder = $this->getMockBuilder('\Symfony\Component\Process\ProcessBuilder')->disableOriginalConstructor()->setMethods(array('setPrefix', 'setArguments', 'getProcess'))->getMock();
+        $processBuilder = $this->getMockBuilder('\Symfony\Component\Process\ProcessBuilder')->disableOriginalConstructor()->setMethods(['setPrefix', 'setArguments', 'getProcess'])->getMock();
         $processBuilder->expects($this->once())->method('setPrefix')->with($pagerPath)->will($this->returnSelf());
-        $processBuilder->expects($this->once())->method('setArguments')->with(array($filePath))->will($this->returnSelf());
+        $processBuilder->expects($this->once())->method('setArguments')->with([$filePath])->will($this->returnSelf());
         $processBuilder->expects($this->once())->method('getProcess')->will($this->returnValue($process));
 
         $this->assertSame($process, $pager->viewFile($processBuilder, $filePath));
@@ -133,14 +133,14 @@ class PagerTest extends PHPUnit_Framework_TestCase
     {
         $pagerPath = '/the/pager';
         $data = 'foo bar';
-        $pager = $this->getMockBuilder('\Nubs\Sensible\Pager')->disableOriginalConstructor()->setMethods(array('get'))->getMock();
+        $pager = $this->getMockBuilder('\Nubs\Sensible\Pager')->disableOriginalConstructor()->setMethods(['get'])->getMock();
         $pager->expects($this->once())->method('get')->will($this->returnValue($pagerPath));
 
-        $process = $this->getMockBuilder('\Symfony\Component\Process\Process')->disableOriginalConstructor()->setMethods(array('setTty', 'run'))->getMock();
+        $process = $this->getMockBuilder('\Symfony\Component\Process\Process')->disableOriginalConstructor()->setMethods(['setTty', 'run'])->getMock();
         $process->expects($this->once())->method('setTty')->with(true)->will($this->returnSelf());
         $process->expects($this->once())->method('run')->will($this->returnValue(0));
 
-        $processBuilder = $this->getMockBuilder('\Symfony\Component\Process\ProcessBuilder')->disableOriginalConstructor()->setMethods(array('setPrefix', 'setInput', 'getProcess'))->getMock();
+        $processBuilder = $this->getMockBuilder('\Symfony\Component\Process\ProcessBuilder')->disableOriginalConstructor()->setMethods(['setPrefix', 'setInput', 'getProcess'])->getMock();
         $processBuilder->expects($this->once())->method('setPrefix')->with($pagerPath)->will($this->returnSelf());
         $processBuilder->expects($this->once())->method('setInput')->with($data)->will($this->returnSelf());
         $processBuilder->expects($this->once())->method('getProcess')->will($this->returnValue($process));
