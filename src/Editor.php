@@ -13,11 +13,8 @@ use Symfony\Component\Process\ProcessBuilder;
  */
 class Editor
 {
-    /** @type string The path to debian's sensible-editor. */
-    protected $_sensibleEditorPath;
-
     /** @type string[] The paths to default editor choices to use if no alternative is found. */
-    protected $_defaultEditorPath = array('/usr/bin/nano', '/usr/bin/vim', '/bin/ed');
+    protected $_defaultEditorPath = array('/usr/bin/sensible-editor', '/usr/bin/nano', '/usr/bin/vim', '/bin/ed');
 
     /** @type \Habitat\Environment\Environment The environment variable wrapper. */
     protected $_environment;
@@ -30,12 +27,11 @@ class Editor
      *
      * @api
      * @param array $options {
-     *     @type string $sensibleEditorPath The path to debian's
-     *         sensible-editor.  Defaults to '/usr/bin/sensible-editor'.
      *     @type string|string[] $defaultEditorPath The paths to the default
      *         editor choices to use if no alternative is found.  The first
      *         editor in the list that can be located will be used.  Defaults to
-     *         ['/usr/bin/nano', '/usr/bin/vim', '/bin/ed'].
+     *         ['/usr/bin/sensible-editor', '/usr/bin/nano', '/usr/bin/vim',
+     *         '/bin/ed'].
      *     @type \Habitat\Environment\Environment $environment The environment
      *         variable wrapper.  Defaults to null, which just uses the built-in
      *         getenv.
@@ -46,8 +42,6 @@ class Editor
      */
     public function __construct(array $options = array())
     {
-        $this->_sensibleEditorPath = isset($options['sensibleEditorPath']) ? $options['sensibleEditorPath'] : '/usr/bin/sensible-editor';
-
         if (isset($options['defaultEditorPath'])) {
             $this->_defaultEditorPath = array_values((array)$options['defaultEditorPath']);
         }
@@ -69,11 +63,6 @@ class Editor
      */
     public function get()
     {
-        $sensibleEditor = $this->_getSensibleEditor();
-        if ($sensibleEditor !== null) {
-            return $sensibleEditor;
-        }
-
         $editor = $this->_environment ? $this->_environment->getenv('EDITOR') : getenv('EDITOR');
 
         return $editor ?: $this->_getDefaultEditor();
@@ -121,21 +110,6 @@ class Editor
         unlink($filePath);
 
         return $data;
-    }
-
-    /**
-     * Gets the path to the sensible editor using the locator if it is set.
-     *
-     * @return string|null The path to the sensible editor or null if it isn't
-     *     available.
-     */
-    protected function _getSensibleEditor()
-    {
-        if ($this->_commandLocator) {
-            return $this->_commandLocator->locate(basename($this->_sensibleEditorPath));
-        }
-
-        return is_executable($this->_sensibleEditorPath) ? $this->_sensibleEditorPath : null;
     }
 
     /**

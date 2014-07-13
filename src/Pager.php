@@ -13,11 +13,8 @@ use Symfony\Component\Process\ProcessBuilder;
  */
 class Pager
 {
-    /** @type string The path to debian's sensible-pager. */
-    protected $_sensiblePagerPath;
-
     /** @type string[] The paths to default pager choices to use if no alternative is found. */
-    protected $_defaultPagerPath = array('/usr/bin/less', '/bin/more');
+    protected $_defaultPagerPath = array('/usr/bin/sensible-pager', '/usr/bin/less', '/bin/more');
 
     /** @type \Habitat\Environment\Environment The environment variable wrapper. */
     protected $_environment;
@@ -30,12 +27,10 @@ class Pager
      *
      * @api
      * @param array $options {
-     *     @type string $sensiblePagerPath The path to debian's sensible-pager.
-     *         Defaults to '/usr/bin/sensible-pager'.
      *     @type string|string[] $defaultPagerPath The paths to the default
      *         pager choices to use if no alternative is found.  The first pager
      *         in the list that can be located will be used.  Defaults to
-     *         ['/usr/bin/less', '/bin/more'].
+     *         ['/usr/bin/sensible-pager', '/usr/bin/less', '/bin/more'].
      *     @type \Habitat\Environment\Environment $environment The environment
      *         variable wrapper.  Defaults to null, which just uses the built-in
      *         getenv.
@@ -46,8 +41,6 @@ class Pager
      */
     public function __construct(array $options = array())
     {
-        $this->_sensiblePagerPath = isset($options['sensiblePagerPath']) ? $options['sensiblePagerPath'] : '/usr/bin/sensible-pager';
-
         if (isset($options['defaultPagerPath'])) {
             $this->_defaultPagerPath = array_values((array)$options['defaultPagerPath']);
         }
@@ -69,11 +62,6 @@ class Pager
      */
     public function get()
     {
-        $sensiblePager = $this->_getSensiblePager();
-        if ($sensiblePager !== null) {
-            return $sensiblePager;
-        }
-
         $pager = $this->_environment ? $this->_environment->getenv('PAGER') : getenv('PAGER');
 
         return $pager ?: $this->_getDefaultPager();
@@ -113,21 +101,6 @@ class Pager
         $proc->setTty(true)->run();
 
         return $proc;
-    }
-
-    /**
-     * Gets the path to the sensible pager using the locator if it is set.
-     *
-     * @return string|null The path to the sensible pager or null if it isn't
-     *     available.
-     */
-    protected function _getSensiblePager()
-    {
-        if ($this->_commandLocator) {
-            return $this->_commandLocator->locate(basename($this->_sensiblePagerPath));
-        }
-
-        return is_executable($this->_sensiblePagerPath) ? $this->_sensiblePagerPath : null;
     }
 
     /**

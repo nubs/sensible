@@ -9,49 +9,15 @@ use PHPUnit_Framework_TestCase;
 class BrowserTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * Verify that the "sensible-browser" gets used.
-     *
-     * @test
-     * @covers ::__construct
-     * @covers ::get
-     * @covers ::_getSensibleBrowser
-     */
-    public function getSensibleBrowser()
-    {
-        $browser = new Browser(array('sensibleBrowserPath' => __DIR__));
-
-        $this->assertSame(__DIR__, $browser->get());
-    }
-
-    /**
-     * Verify that the "sensible-browser" gets used and located properly.
-     *
-     * @test
-     * @covers ::__construct
-     * @covers ::get
-     * @covers ::_getSensibleBrowser
-     */
-    public function getSensibleBrowserWithLocator()
-    {
-        $locator = $this->getMockBuilder('\Nubs\Which\Locator')->disableOriginalConstructor()->setMethods(array('locate'))->getMock();
-        $locator->expects($this->once())->method('locate')->with('sensible-browser')->will($this->returnValue('/foo/bar/sensible-browser'));
-        $browser = new Browser(array('commandLocator' => $locator));
-
-        $this->assertSame('/foo/bar/sensible-browser', $browser->get());
-    }
-
-    /**
      * Verify that the default browser is used.
      *
      * @test
      * @covers ::__construct
      * @covers ::get
-     * @covers ::_getSensibleBrowser
-     * @covers ::_getDefaultBrowser
      */
     public function getDefaultBrowser()
     {
-        $browser = new Browser(array('sensibleBrowserPath' => 'nonexistant', 'defaultBrowserPath' => 'bar'));
+        $browser = new Browser(array('defaultBrowserPath' => 'bar'));
 
         $this->assertSame('bar', $browser->get());
     }
@@ -62,8 +28,6 @@ class BrowserTest extends PHPUnit_Framework_TestCase
      * @test
      * @covers ::__construct
      * @covers ::get
-     * @covers ::_getSensibleBrowser
-     * @covers ::_getDefaultBrowser
      */
     public function getDefaultBrowserWithLocator()
     {
@@ -85,8 +49,6 @@ class BrowserTest extends PHPUnit_Framework_TestCase
      * @test
      * @covers ::__construct
      * @covers ::get
-     * @covers ::_getSensibleBrowser
-     * @covers ::_getDefaultBrowser
      */
     public function getDefaultBrowserWhenNoneLocated()
     {

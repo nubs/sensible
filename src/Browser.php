@@ -12,11 +12,8 @@ use Symfony\Component\Process\ProcessBuilder;
  */
 class Browser
 {
-    /** @type string The path to debian's sensible-browser. */
-    protected $_sensibleBrowserPath;
-
     /** @type string[] The paths to default browser choices to use if no alternative is found. */
-    protected $_defaultBrowserPath = array('/usr/bin/firefox', '/usr/bin/chromium-browser', '/usr/bin/chrome', '/usr/bin/elinks');
+    protected $_defaultBrowserPath = array('/usr/bin/sensible-browser', '/usr/bin/firefox', '/usr/bin/chromium-browser', '/usr/bin/chrome', '/usr/bin/elinks');
 
     /** @type \Nubs\Which\Locator The command locator. */
     protected $_commandLocator;
@@ -26,13 +23,12 @@ class Browser
      *
      * @api
      * @param array $options {
-     *     @type string $sensibleBrowserPath The path to debian's
-     *         sensible-browser.  Defaults to '/usr/bin/sensible-browser'.
      *     @type string|string[] $defaultBrowserPath The paths to the default
      *         browser choices to use if no alternative is found.  The first
      *         browser in the list that can be located will be used.  Defaults
-     *         to ['/usr/bin/firefox', '/usr/bin/chromium-browser',
-     *         '/usr/bin/chrome', '/usr/bin/elinks'].
+     *         to ['/usr/bin/sensible-browser', '/usr/bin/firefox',
+     *         '/usr/bin/chromium-browser', '/usr/bin/chrome',
+     *         '/usr/bin/elinks'].
      *     @type \Nubs\Which\Locator $commandLocator The command locator.  When
      *         provided, this helps locate commands using PATH rather than hard-
      *         coded locations.
@@ -40,8 +36,6 @@ class Browser
      */
     public function __construct(array $options = array())
     {
-        $this->_sensibleBrowserPath = isset($options['sensibleBrowserPath']) ? $options['sensibleBrowserPath'] : '/usr/bin/sensible-browser';
-
         if (isset($options['defaultBrowserPath'])) {
             $this->_defaultBrowserPath = array_values((array)$options['defaultBrowserPath']);
         }
@@ -59,12 +53,16 @@ class Browser
      */
     public function get()
     {
-        $sensibleBrowser = $this->_getSensibleBrowser();
-        if ($sensibleBrowser !== null) {
-            return $sensibleBrowser;
+        if ($this->_commandLocator) {
+            foreach ($this->_defaultBrowserPath as $browserPath) {
+                $location = $this->_commandLocator->locate(basename($browserPath));
+                if ($location !== null) {
+                    return $location;
+                }
+            }
         }
 
-        return $this->_getDefaultBrowser();
+        return empty($this->_defaultBrowserPath) ? null : $this->_defaultBrowserPath[count($this->_defaultBrowserPath) - 1];
     }
 
     /**
@@ -83,39 +81,5 @@ class Browser
         $proc->setTty(true)->run();
 
         return $proc;
-    }
-
-    /**
-     * Gets the path to the sensible browser using the locator if it is set.
-     *
-     * @return string|null The path to the sensible browser or null if it isn't
-     *     available.
-     */
-    protected function _getSensibleBrowser()
-    {
-        if ($this->_commandLocator) {
-            return $this->_commandLocator->locate(basename($this->_sensibleBrowserPath));
-        }
-
-        return is_executable($this->_sensibleBrowserPath) ? $this->_sensibleBrowserPath : null;
-    }
-
-    /**
-     * Gets the path to the default browser using the locator if it is set.
-     *
-     * @return string|null The path to the default browser.
-     */
-    protected function _getDefaultBrowser()
-    {
-        if ($this->_commandLocator) {
-            foreach ($this->_defaultBrowserPath as $browserPath) {
-                $location = $this->_commandLocator->locate(basename($browserPath));
-                if ($location !== null) {
-                    return $location;
-                }
-            }
-        }
-
-        return empty($this->_defaultBrowserPath) ? null : $this->_defaultBrowserPath[count($this->_defaultBrowserPath) - 1];
     }
 }
