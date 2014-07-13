@@ -8,6 +8,13 @@ use PHPUnit_Framework_TestCase;
  */
 class EditorTest extends PHPUnit_Framework_TestCase
 {
+    private $_commandLocator;
+
+    public function setUp()
+    {
+        $this->_commandLocator = $this->getMockBuilder('\Nubs\Which\Locator')->disableOriginalConstructor()->setMethods(array('locate'))->getMock();
+    }
+
     /**
      * Verify that the "EDITOR" environment variable gets used.
      *
@@ -20,7 +27,7 @@ class EditorTest extends PHPUnit_Framework_TestCase
         $env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(array('getenv'))->getMock();
         $env->expects($this->once())->method('getenv')->with('EDITOR')->will($this->returnValue('foo'));
 
-        $editor = new Editor(array('environment' => $env));
+        $editor = new Editor($this->_commandLocator, array('environment' => $env));
 
         $this->assertSame('foo', $editor->get());
     }
@@ -37,7 +44,7 @@ class EditorTest extends PHPUnit_Framework_TestCase
     {
         $env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(array('getenv'))->getMock();
         $env->expects($this->once())->method('getenv')->with('EDITOR')->will($this->returnValue(null));
-        $editor = new Editor(array('environment' => $env, 'defaultEditorPath' => 'bar'));
+        $editor = new Editor($this->_commandLocator, array('environment' => $env, 'defaultEditorPath' => 'bar'));
 
         $this->assertSame('bar', $editor->get());
     }
@@ -55,12 +62,11 @@ class EditorTest extends PHPUnit_Framework_TestCase
         $env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(array('getenv'))->getMock();
         $env->expects($this->once())->method('getenv')->with('EDITOR')->will($this->returnValue(null));
 
-        $locator = $this->getMockBuilder('\Nubs\Which\Locator')->disableOriginalConstructor()->setMethods(array('locate'))->getMock();
-        $locator->expects($this->at(0))->method('locate')->with('sensible-editor')->will($this->returnValue(null));
-        $locator->expects($this->at(1))->method('locate')->with('nano')->will($this->returnValue(null));
-        $locator->expects($this->at(2))->method('locate')->with('vim')->will($this->returnValue('/foo/bar/vim'));
+        $this->_commandLocator->expects($this->at(0))->method('locate')->with('sensible-editor')->will($this->returnValue(null));
+        $this->_commandLocator->expects($this->at(1))->method('locate')->with('nano')->will($this->returnValue(null));
+        $this->_commandLocator->expects($this->at(2))->method('locate')->with('vim')->will($this->returnValue('/foo/bar/vim'));
 
-        $editor = new Editor(array('environment' => $env, 'commandLocator' => $locator));
+        $editor = new Editor($this->_commandLocator, array('environment' => $env));
 
         $this->assertSame('/foo/bar/vim', $editor->get());
     }
@@ -78,13 +84,12 @@ class EditorTest extends PHPUnit_Framework_TestCase
         $env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(array('getenv'))->getMock();
         $env->expects($this->once())->method('getenv')->with('EDITOR')->will($this->returnValue(null));
 
-        $locator = $this->getMockBuilder('\Nubs\Which\Locator')->disableOriginalConstructor()->setMethods(array('locate'))->getMock();
-        $locator->expects($this->at(0))->method('locate')->with('sensible-editor')->will($this->returnValue(null));
-        $locator->expects($this->at(1))->method('locate')->with('nano')->will($this->returnValue(null));
-        $locator->expects($this->at(2))->method('locate')->with('vim')->will($this->returnValue(null));
-        $locator->expects($this->at(3))->method('locate')->with('ed')->will($this->returnValue(null));
+        $this->_commandLocator->expects($this->at(0))->method('locate')->with('sensible-editor')->will($this->returnValue(null));
+        $this->_commandLocator->expects($this->at(1))->method('locate')->with('nano')->will($this->returnValue(null));
+        $this->_commandLocator->expects($this->at(2))->method('locate')->with('vim')->will($this->returnValue(null));
+        $this->_commandLocator->expects($this->at(3))->method('locate')->with('ed')->will($this->returnValue(null));
 
-        $editor = new Editor(array('environment' => $env, 'commandLocator' => $locator));
+        $editor = new Editor($this->_commandLocator, array('environment' => $env));
 
         $this->assertSame('/bin/ed', $editor->get());
     }
@@ -101,7 +106,7 @@ class EditorTest extends PHPUnit_Framework_TestCase
     {
         $editorPath = '/the/editor';
         $filePath = '/the/file';
-        $editor = $this->getMockBuilder('\Nubs\Sensible\Editor')->setMethods(array('get'))->getMock();
+        $editor = $this->getMockBuilder('\Nubs\Sensible\Editor')->disableOriginalConstructor()->setMethods(array('get'))->getMock();
         $editor->expects($this->once())->method('get')->will($this->returnValue($editorPath));
 
         $process = $this->getMockBuilder('\Symfony\Component\Process\Process')->disableOriginalConstructor()->setMethods(array('setTty', 'run'))->getMock();
@@ -134,7 +139,7 @@ class EditorTest extends PHPUnit_Framework_TestCase
 
         $processBuilder = $this->getMockBuilder('\Symfony\Component\Process\ProcessBuilder')->disableOriginalConstructor()->setMethods(array())->getMock();
 
-        $editor = $this->getMockBuilder('\Nubs\Sensible\Editor')->setMethods(array('editFile'))->getMock();
+        $editor = $this->getMockBuilder('\Nubs\Sensible\Editor')->disableOriginalConstructor()->setMethods(array('editFile'))->getMock();
         $editor->expects($this->once())->method('editFile')->will($this->returnValue($process));
 
         $this->assertSame($data, $editor->editData($processBuilder, $data));

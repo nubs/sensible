@@ -8,6 +8,13 @@ use PHPUnit_Framework_TestCase;
  */
 class BrowserTest extends PHPUnit_Framework_TestCase
 {
+    private $_commandLocator;
+
+    public function setUp()
+    {
+        $this->_commandLocator = $this->getMockBuilder('\Nubs\Which\Locator')->disableOriginalConstructor()->setMethods(array('locate'))->getMock();
+    }
+
     /**
      * Verify that the default browser is used.
      *
@@ -17,7 +24,7 @@ class BrowserTest extends PHPUnit_Framework_TestCase
      */
     public function getDefaultBrowser()
     {
-        $browser = new Browser(array('defaultBrowserPath' => 'bar'));
+        $browser = new Browser($this->_commandLocator, array('defaultBrowserPath' => 'bar'));
 
         $this->assertSame('bar', $browser->get());
     }
@@ -31,14 +38,13 @@ class BrowserTest extends PHPUnit_Framework_TestCase
      */
     public function getDefaultBrowserWithLocator()
     {
-        $locator = $this->getMockBuilder('\Nubs\Which\Locator')->disableOriginalConstructor()->setMethods(array('locate'))->getMock();
-        $locator->expects($this->at(0))->method('locate')->with('sensible-browser')->will($this->returnValue(null));
-        $locator->expects($this->at(1))->method('locate')->with('firefox')->will($this->returnValue(null));
-        $locator->expects($this->at(2))->method('locate')->with('chromium-browser')->will($this->returnValue(null));
-        $locator->expects($this->at(3))->method('locate')->with('chrome')->will($this->returnValue(null));
-        $locator->expects($this->at(4))->method('locate')->with('elinks')->will($this->returnValue('/foo/bar/elinks'));
+        $this->_commandLocator->expects($this->at(0))->method('locate')->with('sensible-browser')->will($this->returnValue(null));
+        $this->_commandLocator->expects($this->at(1))->method('locate')->with('firefox')->will($this->returnValue(null));
+        $this->_commandLocator->expects($this->at(2))->method('locate')->with('chromium-browser')->will($this->returnValue(null));
+        $this->_commandLocator->expects($this->at(3))->method('locate')->with('chrome')->will($this->returnValue(null));
+        $this->_commandLocator->expects($this->at(4))->method('locate')->with('elinks')->will($this->returnValue('/foo/bar/elinks'));
 
-        $browser = new Browser(array('commandLocator' => $locator));
+        $browser = new Browser($this->_commandLocator);
 
         $this->assertSame('/foo/bar/elinks', $browser->get());
     }
@@ -52,14 +58,13 @@ class BrowserTest extends PHPUnit_Framework_TestCase
      */
     public function getDefaultBrowserWhenNoneLocated()
     {
-        $locator = $this->getMockBuilder('\Nubs\Which\Locator')->disableOriginalConstructor()->setMethods(array('locate'))->getMock();
-        $locator->expects($this->at(0))->method('locate')->with('sensible-browser')->will($this->returnValue(null));
-        $locator->expects($this->at(1))->method('locate')->with('firefox')->will($this->returnValue(null));
-        $locator->expects($this->at(2))->method('locate')->with('chromium-browser')->will($this->returnValue(null));
-        $locator->expects($this->at(3))->method('locate')->with('chrome')->will($this->returnValue(null));
-        $locator->expects($this->at(4))->method('locate')->with('elinks')->will($this->returnValue(null));
+        $this->_commandLocator->expects($this->at(0))->method('locate')->with('sensible-browser')->will($this->returnValue(null));
+        $this->_commandLocator->expects($this->at(1))->method('locate')->with('firefox')->will($this->returnValue(null));
+        $this->_commandLocator->expects($this->at(2))->method('locate')->with('chromium-browser')->will($this->returnValue(null));
+        $this->_commandLocator->expects($this->at(3))->method('locate')->with('chrome')->will($this->returnValue(null));
+        $this->_commandLocator->expects($this->at(4))->method('locate')->with('elinks')->will($this->returnValue(null));
 
-        $browser = new Browser(array('commandLocator' => $locator));
+        $browser = new Browser($this->_commandLocator);
 
         $this->assertSame('/usr/bin/elinks', $browser->get());
     }
@@ -76,7 +81,7 @@ class BrowserTest extends PHPUnit_Framework_TestCase
     {
         $browserPath = '/the/browser';
         $uri = 'http://the.uri';
-        $browser = $this->getMockBuilder('\Nubs\Sensible\Browser')->setMethods(array('get'))->getMock();
+        $browser = $this->getMockBuilder('\Nubs\Sensible\Browser')->disableOriginalConstructor()->setMethods(array('get'))->getMock();
         $browser->expects($this->once())->method('get')->will($this->returnValue($browserPath));
 
         $process = $this->getMockBuilder('\Symfony\Component\Process\Process')->disableOriginalConstructor()->setMethods(array('setTty', 'run'))->getMock();

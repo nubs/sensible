@@ -1,6 +1,7 @@
 <?php
 namespace Nubs\Sensible;
 
+use Nubs\Which\Locator as CommandLocator;
 use Symfony\Component\Process\ProcessBuilder;
 
 /**
@@ -22,6 +23,8 @@ class Browser
      * Initialize the browser loader and configure the options
      *
      * @api
+     * @param \Nubs\Which\Locator $commandLocator The command locator.  This
+     *     helps locate commands using PATH.
      * @param array $options {
      *     @type string|string[] $defaultBrowserPath The paths to the default
      *         browser choices to use if no alternative is found.  The first
@@ -29,19 +32,14 @@ class Browser
      *         to ['/usr/bin/sensible-browser', '/usr/bin/firefox',
      *         '/usr/bin/chromium-browser', '/usr/bin/chrome',
      *         '/usr/bin/elinks'].
-     *     @type \Nubs\Which\Locator $commandLocator The command locator.  When
-     *         provided, this helps locate commands using PATH rather than hard-
-     *         coded locations.
      * }
      */
-    public function __construct(array $options = array())
+    public function __construct(CommandLocator $commandLocator, array $options = array())
     {
+        $this->_commandLocator = $commandLocator;
+
         if (isset($options['defaultBrowserPath'])) {
             $this->_defaultBrowserPath = array_values((array)$options['defaultBrowserPath']);
-        }
-
-        if (isset($options['commandLocator'])) {
-            $this->_commandLocator = $options['commandLocator'];
         }
     }
 
@@ -53,12 +51,10 @@ class Browser
      */
     public function get()
     {
-        if ($this->_commandLocator) {
-            foreach ($this->_defaultBrowserPath as $browserPath) {
-                $location = $this->_commandLocator->locate(basename($browserPath));
-                if ($location !== null) {
-                    return $location;
-                }
+        foreach ($this->_defaultBrowserPath as $browserPath) {
+            $location = $this->_commandLocator->locate(basename($browserPath));
+            if ($location !== null) {
+                return $location;
             }
         }
 

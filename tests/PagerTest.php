@@ -8,6 +8,13 @@ use PHPUnit_Framework_TestCase;
  */
 class PagerTest extends PHPUnit_Framework_TestCase
 {
+    private $_commandLocator;
+
+    public function setUp()
+    {
+        $this->_commandLocator = $this->getMockBuilder('\Nubs\Which\Locator')->disableOriginalConstructor()->setMethods(array('locate'))->getMock();
+    }
+
     /**
      * Verify that the "PAGER" environment variable gets used.
      *
@@ -20,7 +27,7 @@ class PagerTest extends PHPUnit_Framework_TestCase
         $env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(array('getenv'))->getMock();
         $env->expects($this->once())->method('getenv')->with('PAGER')->will($this->returnValue('foo'));
 
-        $pager = new Pager(array('environment' => $env));
+        $pager = new Pager($this->_commandLocator, array('environment' => $env));
 
         $this->assertSame('foo', $pager->get());
     }
@@ -37,7 +44,7 @@ class PagerTest extends PHPUnit_Framework_TestCase
     {
         $env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(array('getenv'))->getMock();
         $env->expects($this->once())->method('getenv')->with('PAGER')->will($this->returnValue(null));
-        $pager = new Pager(array('environment' => $env, 'defaultPagerPath' => 'bar'));
+        $pager = new Pager($this->_commandLocator, array('environment' => $env, 'defaultPagerPath' => 'bar'));
 
         $this->assertSame('bar', $pager->get());
     }
@@ -55,12 +62,11 @@ class PagerTest extends PHPUnit_Framework_TestCase
         $env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(array('getenv'))->getMock();
         $env->expects($this->once())->method('getenv')->with('PAGER')->will($this->returnValue(null));
 
-        $locator = $this->getMockBuilder('\Nubs\Which\Locator')->disableOriginalConstructor()->setMethods(array('locate'))->getMock();
-        $locator->expects($this->at(0))->method('locate')->with('sensible-pager')->will($this->returnValue(null));
-        $locator->expects($this->at(1))->method('locate')->with('less')->will($this->returnValue(null));
-        $locator->expects($this->at(2))->method('locate')->with('more')->will($this->returnValue('/foo/bar/more'));
+        $this->_commandLocator->expects($this->at(0))->method('locate')->with('sensible-pager')->will($this->returnValue(null));
+        $this->_commandLocator->expects($this->at(1))->method('locate')->with('less')->will($this->returnValue(null));
+        $this->_commandLocator->expects($this->at(2))->method('locate')->with('more')->will($this->returnValue('/foo/bar/more'));
 
-        $pager = new Pager(array('environment' => $env, 'commandLocator' => $locator));
+        $pager = new Pager($this->_commandLocator, array('environment' => $env));
 
         $this->assertSame('/foo/bar/more', $pager->get());
     }
@@ -78,12 +84,11 @@ class PagerTest extends PHPUnit_Framework_TestCase
         $env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(array('getenv'))->getMock();
         $env->expects($this->once())->method('getenv')->with('PAGER')->will($this->returnValue(null));
 
-        $locator = $this->getMockBuilder('\Nubs\Which\Locator')->disableOriginalConstructor()->setMethods(array('locate'))->getMock();
-        $locator->expects($this->at(0))->method('locate')->with('sensible-pager')->will($this->returnValue(null));
-        $locator->expects($this->at(1))->method('locate')->with('less')->will($this->returnValue(null));
-        $locator->expects($this->at(2))->method('locate')->with('more')->will($this->returnValue(null));
+        $this->_commandLocator->expects($this->at(0))->method('locate')->with('sensible-pager')->will($this->returnValue(null));
+        $this->_commandLocator->expects($this->at(1))->method('locate')->with('less')->will($this->returnValue(null));
+        $this->_commandLocator->expects($this->at(2))->method('locate')->with('more')->will($this->returnValue(null));
 
-        $pager = new Pager(array('environment' => $env, 'commandLocator' => $locator));
+        $pager = new Pager($this->_commandLocator, array('environment' => $env));
 
         $this->assertSame('/bin/more', $pager->get());
     }
@@ -100,7 +105,7 @@ class PagerTest extends PHPUnit_Framework_TestCase
     {
         $pagerPath = '/the/pager';
         $filePath = '/the/file';
-        $pager = $this->getMockBuilder('\Nubs\Sensible\Pager')->setMethods(array('get'))->getMock();
+        $pager = $this->getMockBuilder('\Nubs\Sensible\Pager')->disableOriginalConstructor()->setMethods(array('get'))->getMock();
         $pager->expects($this->once())->method('get')->will($this->returnValue($pagerPath));
 
         $process = $this->getMockBuilder('\Symfony\Component\Process\Process')->disableOriginalConstructor()->setMethods(array('setTty', 'run'))->getMock();
@@ -127,7 +132,7 @@ class PagerTest extends PHPUnit_Framework_TestCase
     {
         $pagerPath = '/the/pager';
         $data = 'foo bar';
-        $pager = $this->getMockBuilder('\Nubs\Sensible\Pager')->setMethods(array('get'))->getMock();
+        $pager = $this->getMockBuilder('\Nubs\Sensible\Pager')->disableOriginalConstructor()->setMethods(array('get'))->getMock();
         $pager->expects($this->once())->method('get')->will($this->returnValue($pagerPath));
 
         $process = $this->getMockBuilder('\Symfony\Component\Process\Process')->disableOriginalConstructor()->setMethods(array('setTty', 'run'))->getMock();

@@ -1,6 +1,7 @@
 <?php
 namespace Nubs\Sensible;
 
+use Nubs\Which\Locator as CommandLocator;
 use Symfony\Component\Process\ProcessBuilder;
 
 /**
@@ -26,6 +27,8 @@ class Editor
      * Initialize the editor loader and configure the options
      *
      * @api
+     * @param \Nubs\Which\Locator $commandLocator The command locator.  This
+     *     helps locate commands using PATH.
      * @param array $options {
      *     @type string|string[] $defaultEditorPath The paths to the default
      *         editor choices to use if no alternative is found.  The first
@@ -35,23 +38,18 @@ class Editor
      *     @type \Habitat\Environment\Environment $environment The environment
      *         variable wrapper.  Defaults to null, which just uses the built-in
      *         getenv.
-     *     @type \Nubs\Which\Locator $commandLocator The command locator.  When
-     *         provided, this helps locate commands using PATH rather than hard-
-     *         coded locations.
      * }
      */
-    public function __construct(array $options = array())
+    public function __construct(CommandLocator $commandLocator, array $options = array())
     {
+        $this->_commandLocator = $commandLocator;
+
         if (isset($options['defaultEditorPath'])) {
             $this->_defaultEditorPath = array_values((array)$options['defaultEditorPath']);
         }
 
         if (isset($options['environment'])) {
             $this->_environment = $options['environment'];
-        }
-
-        if (isset($options['commandLocator'])) {
-            $this->_commandLocator = $options['commandLocator'];
         }
     }
 
@@ -119,12 +117,10 @@ class Editor
      */
     protected function _getDefaultEditor()
     {
-        if ($this->_commandLocator) {
-            foreach ($this->_defaultEditorPath as $editorPath) {
-                $location = $this->_commandLocator->locate(basename($editorPath));
-                if ($location !== null) {
-                    return $location;
-                }
+        foreach ($this->_defaultEditorPath as $editorPath) {
+            $location = $this->_commandLocator->locate(basename($editorPath));
+            if ($location !== null) {
+                return $location;
             }
         }
 
