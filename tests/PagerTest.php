@@ -9,10 +9,12 @@ use PHPUnit_Framework_TestCase;
 class PagerTest extends PHPUnit_Framework_TestCase
 {
     private $_commandLocator;
+    private $_env;
 
     public function setUp()
     {
         $this->_commandLocator = $this->getMockBuilder('\Nubs\Which\Locator')->disableOriginalConstructor()->setMethods(array('locate'))->getMock();
+        $this->_env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(array('getenv'))->getMock();
     }
 
     /**
@@ -24,10 +26,9 @@ class PagerTest extends PHPUnit_Framework_TestCase
      */
     public function getEnvironmentVariablePager()
     {
-        $env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(array('getenv'))->getMock();
-        $env->expects($this->once())->method('getenv')->with('PAGER')->will($this->returnValue('foo'));
+        $this->_env->expects($this->once())->method('getenv')->with('PAGER')->will($this->returnValue('foo'));
 
-        $pager = new Pager($this->_commandLocator, array(), array('environment' => $env));
+        $pager = new Pager($this->_commandLocator, array(), $this->_env);
 
         $this->assertSame('foo', $pager->get());
     }
@@ -42,12 +43,11 @@ class PagerTest extends PHPUnit_Framework_TestCase
      */
     public function getDefaultPager()
     {
-        $env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(array('getenv'))->getMock();
-        $env->expects($this->once())->method('getenv')->with('PAGER')->will($this->returnValue(null));
+        $this->_env->expects($this->once())->method('getenv')->with('PAGER')->will($this->returnValue(null));
 
         $this->_commandLocator->expects($this->at(0))->method('locate')->with('bar')->will($this->returnValue('/foo/bar'));
 
-        $pager = new Pager($this->_commandLocator, 'bar', array('environment' => $env));
+        $pager = new Pager($this->_commandLocator, 'bar', $this->_env);
 
         $this->assertSame('/foo/bar', $pager->get());
     }
@@ -62,14 +62,13 @@ class PagerTest extends PHPUnit_Framework_TestCase
      */
     public function getDefaultPagerWithLocator()
     {
-        $env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(array('getenv'))->getMock();
-        $env->expects($this->once())->method('getenv')->with('PAGER')->will($this->returnValue(null));
+        $this->_env->expects($this->once())->method('getenv')->with('PAGER')->will($this->returnValue(null));
 
         $this->_commandLocator->expects($this->at(0))->method('locate')->with('a')->will($this->returnValue(null));
         $this->_commandLocator->expects($this->at(1))->method('locate')->with('b')->will($this->returnValue(null));
         $this->_commandLocator->expects($this->at(2))->method('locate')->with('c')->will($this->returnValue('/foo/bar/c'));
 
-        $pager = new Pager($this->_commandLocator, array('a', 'b', 'c'), array('environment' => $env));
+        $pager = new Pager($this->_commandLocator, array('a', 'b', 'c'), $this->_env);
 
         $this->assertSame('/foo/bar/c', $pager->get());
     }
@@ -84,14 +83,13 @@ class PagerTest extends PHPUnit_Framework_TestCase
      */
     public function getDefaultPagerWhenNoneLocated()
     {
-        $env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(array('getenv'))->getMock();
-        $env->expects($this->once())->method('getenv')->with('PAGER')->will($this->returnValue(null));
+        $this->_env->expects($this->once())->method('getenv')->with('PAGER')->will($this->returnValue(null));
 
         $this->_commandLocator->expects($this->at(0))->method('locate')->with('a')->will($this->returnValue(null));
         $this->_commandLocator->expects($this->at(1))->method('locate')->with('b')->will($this->returnValue(null));
         $this->_commandLocator->expects($this->at(2))->method('locate')->with('c')->will($this->returnValue(null));
 
-        $pager = new Pager($this->_commandLocator, array('a', 'b', 'c'), array('environment' => $env));
+        $pager = new Pager($this->_commandLocator, array('a', 'b', 'c'), $this->_env);
 
         $this->assertNull($pager->get());
     }

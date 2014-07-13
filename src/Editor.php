@@ -1,6 +1,7 @@
 <?php
 namespace Nubs\Sensible;
 
+use Habitat\Environment\Environment;
 use Nubs\Which\Locator as CommandLocator;
 use Symfony\Component\Process\ProcessBuilder;
 
@@ -28,20 +29,15 @@ class Editor
      *     helps locate commands using PATH.
      * @param string|string[] $editorPaths The names to the potential editors.
      *     The first command in the list that can be located will be used.
-     * @param array $options {
-     *     @type \Habitat\Environment\Environment $environment The environment
-     *         variable wrapper.  Defaults to null, which just uses the built-in
-     *         getenv.
-     * }
+     * @param \Habitat\Environment\Environment $environment The environment
+     *     variable wrapper.  Defaults to null, which just uses the built-in
+     *     getenv.
      */
-    public function __construct(CommandLocator $commandLocator, $editorPaths = array('sensible-editor', 'nano', 'vim', 'ed'), array $options = array())
+    public function __construct(CommandLocator $commandLocator, $editorPaths = array('sensible-editor', 'nano', 'vim', 'ed'), Environment $environment = null)
     {
         $this->_commandLocator = $commandLocator;
         $this->_editorPaths = array_values((array)$editorPaths);
-
-        if (isset($options['environment'])) {
-            $this->_environment = $options['environment'];
-        }
+        $this->_environment = $environment;
     }
 
     /**

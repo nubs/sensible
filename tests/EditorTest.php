@@ -9,10 +9,12 @@ use PHPUnit_Framework_TestCase;
 class EditorTest extends PHPUnit_Framework_TestCase
 {
     private $_commandLocator;
+    private $_env;
 
     public function setUp()
     {
         $this->_commandLocator = $this->getMockBuilder('\Nubs\Which\Locator')->disableOriginalConstructor()->setMethods(array('locate'))->getMock();
+        $this->_env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(array('getenv'))->getMock();
     }
 
     /**
@@ -24,10 +26,9 @@ class EditorTest extends PHPUnit_Framework_TestCase
      */
     public function getEnvironmentVariableEditor()
     {
-        $env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(array('getenv'))->getMock();
-        $env->expects($this->once())->method('getenv')->with('EDITOR')->will($this->returnValue('foo'));
+        $this->_env->expects($this->once())->method('getenv')->with('EDITOR')->will($this->returnValue('foo'));
 
-        $editor = new Editor($this->_commandLocator, array(), array('environment' => $env));
+        $editor = new Editor($this->_commandLocator, array(), $this->_env);
 
         $this->assertSame('foo', $editor->get());
     }
@@ -42,12 +43,10 @@ class EditorTest extends PHPUnit_Framework_TestCase
      */
     public function getDefaultEditor()
     {
-        $env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(array('getenv'))->getMock();
-        $env->expects($this->once())->method('getenv')->with('EDITOR')->will($this->returnValue(null));
-
+        $this->_env->expects($this->once())->method('getenv')->with('EDITOR')->will($this->returnValue(null));
         $this->_commandLocator->expects($this->at(0))->method('locate')->with('bar')->will($this->returnValue('/foo/bar'));
 
-        $editor = new Editor($this->_commandLocator, 'bar', array('environment' => $env));
+        $editor = new Editor($this->_commandLocator, 'bar', $this->_env);
 
         $this->assertSame('/foo/bar', $editor->get());
     }
@@ -62,14 +61,13 @@ class EditorTest extends PHPUnit_Framework_TestCase
      */
     public function getDefaultEditorWithLocator()
     {
-        $env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(array('getenv'))->getMock();
-        $env->expects($this->once())->method('getenv')->with('EDITOR')->will($this->returnValue(null));
+        $this->_env->expects($this->once())->method('getenv')->with('EDITOR')->will($this->returnValue(null));
 
         $this->_commandLocator->expects($this->at(0))->method('locate')->with('a')->will($this->returnValue(null));
         $this->_commandLocator->expects($this->at(1))->method('locate')->with('b')->will($this->returnValue(null));
         $this->_commandLocator->expects($this->at(2))->method('locate')->with('c')->will($this->returnValue('/foo/bar/c'));
 
-        $editor = new Editor($this->_commandLocator, array('a', 'b', 'c'), array('environment' => $env));
+        $editor = new Editor($this->_commandLocator, array('a', 'b', 'c'), $this->_env);
 
         $this->assertSame('/foo/bar/c', $editor->get());
     }
@@ -84,14 +82,14 @@ class EditorTest extends PHPUnit_Framework_TestCase
      */
     public function getDefaultEditorWhenNoneLocated()
     {
-        $env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(array('getenv'))->getMock();
-        $env->expects($this->once())->method('getenv')->with('EDITOR')->will($this->returnValue(null));
+        $this->_env->expects($this->once())->method('getenv')->with('EDITOR')->will($this->returnValue(null));
+
 
         $this->_commandLocator->expects($this->at(0))->method('locate')->with('a')->will($this->returnValue(null));
         $this->_commandLocator->expects($this->at(1))->method('locate')->with('b')->will($this->returnValue(null));
         $this->_commandLocator->expects($this->at(2))->method('locate')->with('c')->will($this->returnValue(null));
 
-        $editor = new Editor($this->_commandLocator, array('a', 'b', 'c'), array('environment' => $env));
+        $editor = new Editor($this->_commandLocator, array('a', 'b', 'c'), $this->_env);
 
         $this->assertNull($editor->get());
     }

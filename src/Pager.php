@@ -1,6 +1,7 @@
 <?php
 namespace Nubs\Sensible;
 
+use Habitat\Environment\Environment;
 use Nubs\Which\Locator as CommandLocator;
 use Symfony\Component\Process\ProcessBuilder;
 
@@ -28,20 +29,15 @@ class Pager
      *     helps locate commands using PATH.
      * @param string|string[] $pagerPaths The names to the potential pagers.
      *     The first command in the list that can be located will be used.
-     * @param array $options {
-     *     @type \Habitat\Environment\Environment $environment The environment
-     *         variable wrapper.  Defaults to null, which just uses the built-in
-     *         getenv.
-     * }
+     * @param \Habitat\Environment\Environment $environment The environment
+     *     variable wrapper.  Defaults to null, which just uses the built-in
+     *     getenv.
      */
-    public function __construct(CommandLocator $commandLocator, $pagerPaths = array('sensible-pager', 'less', 'more'), array $options = array())
+    public function __construct(CommandLocator $commandLocator, $pagerPaths = array('sensible-pager', 'less', 'more'), Environment $environment = null)
     {
         $this->_commandLocator = $commandLocator;
         $this->_pagerPaths = array_values((array)$pagerPaths);
-
-        if (isset($options['environment'])) {
-            $this->_environment = $options['environment'];
-        }
+        $this->_environment = $environment;
     }
 
     /**
