@@ -44,9 +44,12 @@ class EditorTest extends PHPUnit_Framework_TestCase
     {
         $env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(array('getenv'))->getMock();
         $env->expects($this->once())->method('getenv')->with('EDITOR')->will($this->returnValue(null));
+
+        $this->_commandLocator->expects($this->at(0))->method('locate')->with('bar')->will($this->returnValue('/foo/bar'));
+
         $editor = new Editor($this->_commandLocator, array('environment' => $env, 'defaultEditorPath' => 'bar'));
 
-        $this->assertSame('bar', $editor->get());
+        $this->assertSame('/foo/bar', $editor->get());
     }
 
     /**
@@ -91,7 +94,7 @@ class EditorTest extends PHPUnit_Framework_TestCase
 
         $editor = new Editor($this->_commandLocator, array('environment' => $env));
 
-        $this->assertSame('/bin/ed', $editor->get());
+        $this->assertNull($editor->get());
     }
 
     /**

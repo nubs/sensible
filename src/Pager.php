@@ -9,8 +9,7 @@ use Symfony\Component\Process\ProcessBuilder;
  *
  * If the user has a "sensible-pager" command, that takes preference to other
  * behavior.  If that does not exist, then the "PAGER" environment variable is
- * used.  If that does not exist, then a default pager is used (/bin/more by
- * default).
+ * used.  If that does not exist, then a default pager is used.
  */
 class Pager
 {
@@ -56,7 +55,8 @@ class Pager
      * Get the path to the user's preferred pager.
      *
      * @api
-     * @return string The path to the user's preferred pager.
+     * @return string|null The path to the user's preferred pager if one is
+     *     found.
      */
     public function get()
     {
@@ -115,6 +115,6 @@ class Pager
             }
         }
 
-        return empty($this->_defaultPagerPath) ? null : $this->_defaultPagerPath[count($this->_defaultPagerPath) - 1];
+        return null;
     }
 }

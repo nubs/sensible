@@ -24,9 +24,10 @@ class BrowserTest extends PHPUnit_Framework_TestCase
      */
     public function getDefaultBrowser()
     {
+        $this->_commandLocator->expects($this->at(0))->method('locate')->with('bar')->will($this->returnValue('/foo/bar'));
         $browser = new Browser($this->_commandLocator, array('defaultBrowserPath' => 'bar'));
 
-        $this->assertSame('bar', $browser->get());
+        $this->assertSame('/foo/bar', $browser->get());
     }
 
     /**
@@ -66,7 +67,7 @@ class BrowserTest extends PHPUnit_Framework_TestCase
 
         $browser = new Browser($this->_commandLocator);
 
-        $this->assertSame('/usr/bin/elinks', $browser->get());
+        $this->assertNull($browser->get());
     }
 
     /**

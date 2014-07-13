@@ -44,9 +44,12 @@ class PagerTest extends PHPUnit_Framework_TestCase
     {
         $env = $this->getMockBuilder('\Habitat\Environment\Environment')->disableOriginalConstructor()->setMethods(array('getenv'))->getMock();
         $env->expects($this->once())->method('getenv')->with('PAGER')->will($this->returnValue(null));
+
+        $this->_commandLocator->expects($this->at(0))->method('locate')->with('bar')->will($this->returnValue('/foo/bar'));
+
         $pager = new Pager($this->_commandLocator, array('environment' => $env, 'defaultPagerPath' => 'bar'));
 
-        $this->assertSame('bar', $pager->get());
+        $this->assertSame('/foo/bar', $pager->get());
     }
 
     /**
@@ -90,7 +93,7 @@ class PagerTest extends PHPUnit_Framework_TestCase
 
         $pager = new Pager($this->_commandLocator, array('environment' => $env));
 
-        $this->assertSame('/bin/more', $pager->get());
+        $this->assertNull($pager->get());
     }
 
     /**

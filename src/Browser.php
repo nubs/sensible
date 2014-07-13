@@ -8,8 +8,7 @@ use Symfony\Component\Process\ProcessBuilder;
  * Provides access to the user's preferred browser command.
  *
  * If the user has a "sensible-browser" command, that takes preference to other
- * behavior.  If that does not exist then a default browser is used (/usr/bin/elinks by
- * default).
+ * behavior.  If that does not exist then a default browser is used.
  */
 class Browser
 {
@@ -47,7 +46,8 @@ class Browser
      * Get the path to the user's preferred browser.
      *
      * @api
-     * @return string The path to the user's preferred browser.
+     * @return string|null The path to the user's preferred browser if one is
+     *     found.
      */
     public function get()
     {
@@ -58,7 +58,7 @@ class Browser
             }
         }
 
-        return empty($this->_defaultBrowserPath) ? null : $this->_defaultBrowserPath[count($this->_defaultBrowserPath) - 1];
+        return null;
     }
 
     /**

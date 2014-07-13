@@ -9,8 +9,7 @@ use Symfony\Component\Process\ProcessBuilder;
  *
  * If the user has a "sensible-editor" command, that takes preference to other
  * behavior.  If that does not exist, then the "EDITOR" environment variable is
- * used.  If that does not exist, then a default editor is used (/bin/ed by
- * default).
+ * used.  If that does not exist, then a default editor is used.
  */
 class Editor
 {
@@ -57,7 +56,8 @@ class Editor
      * Get the path to the user's preferred editor.
      *
      * @api
-     * @return string The path to the user's preferred editor.
+     * @return string|null The path to the user's preferred editor if one is
+     *     found.
      */
     public function get()
     {
@@ -124,6 +124,6 @@ class Editor
             }
         }
 
-        return empty($this->_defaultEditorPath) ? null : $this->_defaultEditorPath[count($this->_defaultEditorPath) - 1];
+        return null;
     }
 }
