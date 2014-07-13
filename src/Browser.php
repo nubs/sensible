@@ -7,38 +7,29 @@ use Symfony\Component\Process\ProcessBuilder;
 /**
  * Provides access to the user's preferred browser command.
  *
- * If the user has a "sensible-browser" command, that takes preference to other
- * behavior.  If that does not exist then a default browser is used.
+ * Browsers are found by a configurable list.
  */
 class Browser
 {
-    /** @type string[] The paths to default browser choices to use if no alternative is found. */
-    protected $_defaultBrowserPath = array('sensible-browser', 'firefox', 'chromium-browser', 'chrome', 'elinks');
+    /** @type string[] The paths to potential browsers. */
+    protected $_browserPaths;
 
     /** @type \Nubs\Which\Locator The command locator. */
     protected $_commandLocator;
 
     /**
-     * Initialize the browser loader and configure the options
+     * Initialize the browser loader.
      *
      * @api
      * @param \Nubs\Which\Locator $commandLocator The command locator.  This
      *     helps locate commands using PATH.
-     * @param array $options {
-     *     @type string|string[] $defaultBrowserPath The paths to the default
-     *         browser choices to use if no alternative is found.  The first
-     *         browser in the list that can be located will be used.  Defaults
-     *         to ['sensible-browser', 'firefox', 'chromium-browser', 'chrome',
-     *         'elinks'].
-     * }
+     * @param string|string[] $browserPaths The names to the potential browsers.
+     *     The first command in the list that can be located will be used.
      */
-    public function __construct(CommandLocator $commandLocator, array $options = array())
+    public function __construct(CommandLocator $commandLocator, $browserPaths = array('sensible-browser', 'firefox', 'chromium-browser', 'chrome', 'elinks'))
     {
         $this->_commandLocator = $commandLocator;
-
-        if (isset($options['defaultBrowserPath'])) {
-            $this->_defaultBrowserPath = array_values((array)$options['defaultBrowserPath']);
-        }
+        $this->_browserPaths = array_values((array)$browserPaths);
     }
 
     /**
@@ -50,7 +41,7 @@ class Browser
      */
     public function get()
     {
-        foreach ($this->_defaultBrowserPath as $browserPath) {
+        foreach ($this->_browserPaths as $browserPath) {
             $location = $this->_commandLocator->locate(basename($browserPath));
             if ($location !== null) {
                 return $location;

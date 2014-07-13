@@ -25,7 +25,7 @@ class BrowserTest extends PHPUnit_Framework_TestCase
     public function getDefaultBrowser()
     {
         $this->_commandLocator->expects($this->at(0))->method('locate')->with('bar')->will($this->returnValue('/foo/bar'));
-        $browser = new Browser($this->_commandLocator, array('defaultBrowserPath' => 'bar'));
+        $browser = new Browser($this->_commandLocator, 'bar');
 
         $this->assertSame('/foo/bar', $browser->get());
     }
@@ -39,15 +39,13 @@ class BrowserTest extends PHPUnit_Framework_TestCase
      */
     public function getDefaultBrowserWithLocator()
     {
-        $this->_commandLocator->expects($this->at(0))->method('locate')->with('sensible-browser')->will($this->returnValue(null));
-        $this->_commandLocator->expects($this->at(1))->method('locate')->with('firefox')->will($this->returnValue(null));
-        $this->_commandLocator->expects($this->at(2))->method('locate')->with('chromium-browser')->will($this->returnValue(null));
-        $this->_commandLocator->expects($this->at(3))->method('locate')->with('chrome')->will($this->returnValue(null));
-        $this->_commandLocator->expects($this->at(4))->method('locate')->with('elinks')->will($this->returnValue('/foo/bar/elinks'));
+        $this->_commandLocator->expects($this->at(0))->method('locate')->with('a')->will($this->returnValue(null));
+        $this->_commandLocator->expects($this->at(1))->method('locate')->with('b')->will($this->returnValue(null));
+        $this->_commandLocator->expects($this->at(2))->method('locate')->with('c')->will($this->returnValue('/foo/bar/c'));
 
-        $browser = new Browser($this->_commandLocator);
+        $browser = new Browser($this->_commandLocator, array('a', 'b', 'c'));
 
-        $this->assertSame('/foo/bar/elinks', $browser->get());
+        $this->assertSame('/foo/bar/c', $browser->get());
     }
 
     /**
@@ -59,13 +57,11 @@ class BrowserTest extends PHPUnit_Framework_TestCase
      */
     public function getDefaultBrowserWhenNoneLocated()
     {
-        $this->_commandLocator->expects($this->at(0))->method('locate')->with('sensible-browser')->will($this->returnValue(null));
-        $this->_commandLocator->expects($this->at(1))->method('locate')->with('firefox')->will($this->returnValue(null));
-        $this->_commandLocator->expects($this->at(2))->method('locate')->with('chromium-browser')->will($this->returnValue(null));
-        $this->_commandLocator->expects($this->at(3))->method('locate')->with('chrome')->will($this->returnValue(null));
-        $this->_commandLocator->expects($this->at(4))->method('locate')->with('elinks')->will($this->returnValue(null));
+        $this->_commandLocator->expects($this->at(0))->method('locate')->with('a')->will($this->returnValue(null));
+        $this->_commandLocator->expects($this->at(1))->method('locate')->with('b')->will($this->returnValue(null));
+        $this->_commandLocator->expects($this->at(2))->method('locate')->with('c')->will($this->returnValue(null));
 
-        $browser = new Browser($this->_commandLocator);
+        $browser = new Browser($this->_commandLocator, array('a', 'b', 'c'));
 
         $this->assertNull($browser->get());
     }

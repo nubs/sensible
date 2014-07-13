@@ -7,14 +7,12 @@ use Symfony\Component\Process\ProcessBuilder;
 /**
  * Provides access to the user's preferred pager command.
  *
- * If the user has a "sensible-pager" command, that takes preference to other
- * behavior.  If that does not exist, then the "PAGER" environment variable is
- * used.  If that does not exist, then a default pager is used.
+ * Pagers are found by a configurable list.
  */
 class Pager
 {
-    /** @type string[] The paths to default pager choices to use if no alternative is found. */
-    protected $_defaultPagerPath = array('sensible-pager', 'less', 'more');
+    /** @type string[] The paths to potential pagers. */
+    protected $_pagerPaths;
 
     /** @type \Habitat\Environment\Environment The environment variable wrapper. */
     protected $_environment;
@@ -28,23 +26,18 @@ class Pager
      * @api
      * @param \Nubs\Which\Locator $commandLocator The command locator.  This
      *     helps locate commands using PATH.
+     * @param string|string[] $pagerPaths The names to the potential pagers.
+     *     The first command in the list that can be located will be used.
      * @param array $options {
-     *     @type string|string[] $defaultPagerPath The paths to the default
-     *         pager choices to use if no alternative is found.  The first pager
-     *         in the list that can be located will be used.  Defaults to
-     *         ['sensible-pager', 'less', 'more'].
      *     @type \Habitat\Environment\Environment $environment The environment
      *         variable wrapper.  Defaults to null, which just uses the built-in
      *         getenv.
      * }
      */
-    public function __construct(CommandLocator $commandLocator, array $options = array())
+    public function __construct(CommandLocator $commandLocator, $pagerPaths = array('sensible-pager', 'less', 'more'), array $options = array())
     {
         $this->_commandLocator = $commandLocator;
-
-        if (isset($options['defaultPagerPath'])) {
-            $this->_defaultPagerPath = array_values((array)$options['defaultPagerPath']);
-        }
+        $this->_pagerPaths = array_values((array)$pagerPaths);
 
         if (isset($options['environment'])) {
             $this->_environment = $options['environment'];
@@ -108,7 +101,7 @@ class Pager
      */
     protected function _getDefaultPager()
     {
-        foreach ($this->_defaultPagerPath as $pagerPath) {
+        foreach ($this->_pagerPaths as $pagerPath) {
             $location = $this->_commandLocator->locate(basename($pagerPath));
             if ($location !== null) {
                 return $location;

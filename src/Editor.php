@@ -7,14 +7,12 @@ use Symfony\Component\Process\ProcessBuilder;
 /**
  * Provides access to the user's preferred editor command.
  *
- * If the user has a "sensible-editor" command, that takes preference to other
- * behavior.  If that does not exist, then the "EDITOR" environment variable is
- * used.  If that does not exist, then a default editor is used.
+ * Editors are found by a configurable list.
  */
 class Editor
 {
-    /** @type string[] The paths to default editor choices to use if no alternative is found. */
-    protected $_defaultEditorPath = array('sensible-editor', 'nano', 'vim', 'ed');
+    /** @type string[] The paths to potential editors. */
+    protected $_editorPaths;
 
     /** @type \Habitat\Environment\Environment The environment variable wrapper. */
     protected $_environment;
@@ -23,28 +21,23 @@ class Editor
     protected $_commandLocator;
 
     /**
-     * Initialize the editor loader and configure the options
+     * Initialize the editor loader.
      *
      * @api
      * @param \Nubs\Which\Locator $commandLocator The command locator.  This
      *     helps locate commands using PATH.
+     * @param string|string[] $editorPaths The names to the potential editors.
+     *     The first command in the list that can be located will be used.
      * @param array $options {
-     *     @type string|string[] $defaultEditorPath The paths to the default
-     *         editor choices to use if no alternative is found.  The first
-     *         editor in the list that can be located will be used.  Defaults to
-     *         ['sensible-editor', 'nano', 'vim', 'ed'].
      *     @type \Habitat\Environment\Environment $environment The environment
      *         variable wrapper.  Defaults to null, which just uses the built-in
      *         getenv.
      * }
      */
-    public function __construct(CommandLocator $commandLocator, array $options = array())
+    public function __construct(CommandLocator $commandLocator, $editorPaths = array('sensible-editor', 'nano', 'vim', 'ed'), array $options = array())
     {
         $this->_commandLocator = $commandLocator;
-
-        if (isset($options['defaultEditorPath'])) {
-            $this->_defaultEditorPath = array_values((array)$options['defaultEditorPath']);
-        }
+        $this->_editorPaths = array_values((array)$editorPaths);
 
         if (isset($options['environment'])) {
             $this->_environment = $options['environment'];
@@ -116,7 +109,7 @@ class Editor
      */
     protected function _getDefaultEditor()
     {
-        foreach ($this->_defaultEditorPath as $editorPath) {
+        foreach ($this->_editorPaths as $editorPath) {
             $location = $this->_commandLocator->locate(basename($editorPath));
             if ($location !== null) {
                 return $location;
