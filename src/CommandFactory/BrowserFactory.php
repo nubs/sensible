@@ -2,7 +2,6 @@
 namespace Nubs\Sensible\CommandFactory;
 
 use Exception;
-use Habitat\Environment\Environment;
 use Nubs\Sensible\Browser;
 use Nubs\Sensible\Strategy\BrowserStrategy;
 use Nubs\Which\Locator as CommandLocator;
