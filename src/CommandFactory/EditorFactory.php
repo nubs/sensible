@@ -12,6 +12,8 @@ use Nubs\Which\Locator as CommandLocator;
  */
 class EditorFactory
 {
+    use CommandFactoryTrait;
+
     /** @type \Nubs\Sensible\Strategy\PagerFactory The pager strategy. */
     private $_strategy;
 
@@ -41,11 +43,6 @@ class EditorFactory
      */
     public function create()
     {
-        $editor = $this->_strategy->get();
-        if ($editor === null) {
-            throw new Exception('Failed to locate a sensible command');
-        }
-
-        return new Editor($editor);
+        return new Editor($this->getCommand($this->_strategy));
     }
 }

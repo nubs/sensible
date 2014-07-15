@@ -11,6 +11,8 @@ use Nubs\Which\Locator as CommandLocator;
  */
 class BrowserFactory
 {
+    use CommandFactoryTrait;
+
     /** @type \Nubs\Sensible\Strategy\BrowserFactory The browser strategy. */
     private $_strategy;
 
@@ -37,11 +39,6 @@ class BrowserFactory
      */
     public function create()
     {
-        $browser = $this->_strategy->get();
-        if ($browser === null) {
-            throw new Exception('Failed to locate a sensible command');
-        }
-
-        return new Browser($browser);
+        return new Browser($this->getCommand($this->_strategy));
     }
 }

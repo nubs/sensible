@@ -24,6 +24,7 @@ class BrowserFactoryTest extends PHPUnit_Framework_TestCase
      * @test
      * @covers ::__construct
      * @covers ::create
+     * @covers \Nubs\Sensible\CommandFactory\CommandFactoryTrait
      */
     public function create()
     {
@@ -42,6 +43,7 @@ class BrowserFactoryTest extends PHPUnit_Framework_TestCase
      * @test
      * @covers ::__construct
      * @covers ::create
+     * @covers \Nubs\Sensible\CommandFactory\CommandFactoryTrait
      * @expectedException \Exception
      * @expectedExceptionMessage Failed to locate a sensible command
      */
