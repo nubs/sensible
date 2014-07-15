@@ -21,10 +21,10 @@ class BrowserFactory
      * @api
      * @param \Nubs\Which\Locator $commandLocator The command locator.  This
      *     helps locate commands using PATH.
-     * @param string|string[] $browsers The names to the potential browsers.
-     *     The first command in the list that can be located will be used.
+     * @param string[] $browsers The names to the potential browsers.  The first
+     *     command in the list that can be located will be used.
      */
-    public function __construct(CommandLocator $commandLocator, $browsers = ['sensible-browser', 'firefox', 'chromium-browser', 'chrome', 'elinks'])
+    public function __construct(CommandLocator $commandLocator, array $browsers = ['sensible-browser', 'firefox', 'chromium-browser', 'chrome', 'elinks'])
     {
         $this->_strategy = new BrowserStrategy($browsers, $commandLocator);
     }

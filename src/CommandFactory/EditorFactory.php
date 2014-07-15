@@ -21,13 +21,13 @@ class EditorFactory
      * @api
      * @param \Nubs\Which\Locator $commandLocator The command locator.  This
      *     helps locate commands using PATH.
-     * @param string|string[] $editors The names to the potential editors.
-     *     The first command in the list that can be located will be used.
+     * @param string[] $editors The names to the potential editors.  The first
+     *     command in the list that can be located will be used.
      * @param \Habitat\Environment\Environment $environment The environment
      *     variable wrapper.  Defaults to null, which just uses the built-in
      *     getenv.
      */
-    public function __construct(CommandLocator $commandLocator, $editors = ['sensible-editor', 'nano', 'vim', 'ed'], Environment $environment = null)
+    public function __construct(CommandLocator $commandLocator, array $editors = ['sensible-editor', 'nano', 'vim', 'ed'], Environment $environment = null)
     {
         $this->_strategy = new EditorStrategy($editors, $commandLocator, $environment);
     }

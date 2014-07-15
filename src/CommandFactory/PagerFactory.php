@@ -21,13 +21,13 @@ class PagerFactory
      * @api
      * @param \Nubs\Which\Locator $commandLocator The command locator.  This
      *     helps locate commands using PATH.
-     * @param string|string[] $pagers The names to the potential pagers.
-     *     The first command in the list that can be located will be used.
+     * @param string[] $pagers The names to the potential pagers.  The first
+     *     command in the list that can be located will be used.
      * @param \Habitat\Environment\Environment $environment The environment
      *     variable wrapper.  Defaults to null, which just uses the built-in
      *     getenv.
      */
-    public function __construct(CommandLocator $commandLocator, $pagers = ['sensible-pager', 'less', 'more'], Environment $environment = null)
+    public function __construct(CommandLocator $commandLocator, array $pagers = ['sensible-pager', 'less', 'more'], Environment $environment = null)
     {
         $this->_strategy = new PagerStrategy($pagers, $commandLocator, $environment);
     }
