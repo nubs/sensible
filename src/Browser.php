@@ -1,54 +1,25 @@
 <?php
 namespace Nubs\Sensible;
 
-use Nubs\Which\Locator as CommandLocator;
 use Symfony\Component\Process\ProcessBuilder;
 
 /**
- * Provides access to the user's preferred browser command.
- *
- * Browsers are found by a configurable list.
+ * Wraps the browser to execute it.
  */
 class Browser
 {
-    /** @type string[] The names of potential browsers. */
-    protected $_browsers;
-
-    /** @type \Nubs\Which\Locator The command locator. */
-    protected $_commandLocator;
+    /** @type string The browser command to use. */
+    private $_browserCommand;
 
     /**
-     * Initialize the browser loader.
+     * Initialize the browser command.
      *
      * @api
-     * @param \Nubs\Which\Locator $commandLocator The command locator.  This
-     *     helps locate commands using PATH.
-     * @param string|string[] $browsers The names to the potential browsers.
-     *     The first command in the list that can be located will be used.
+     * @param string $browserCommand The browser command to use.
      */
-    public function __construct(CommandLocator $commandLocator, $browsers = ['sensible-browser', 'firefox', 'chromium-browser', 'chrome', 'elinks'])
+    public function __construct($browserCommand)
     {
-        $this->_commandLocator = $commandLocator;
-        $this->_browsers = array_values((array)$browsers);
-    }
-
-    /**
-     * Get the path to the user's preferred browser.
-     *
-     * @api
-     * @return string|null The path to the user's preferred browser if one is
-     *     found.
-     */
-    public function get()
-    {
-        foreach ($this->_browsers as $browser) {
-            $location = $this->_commandLocator->locate(basename($browser));
-            if ($location !== null) {
-                return $location;
-            }
-        }
-
-        return null;
+        $this->_browserCommand = $browserCommand;
     }
 
     /**
@@ -63,7 +34,7 @@ class Browser
      */
     public function viewURI(ProcessBuilder $processBuilder, $uri)
     {
-        $proc = $processBuilder->setPrefix($this->get())->setArguments([$uri])->getProcess();
+        $proc = $processBuilder->setPrefix($this->_browserCommand)->setArguments([$uri])->getProcess();
         $proc->setTty(true)->run();
 
         return $proc;

@@ -1,57 +1,25 @@
 <?php
 namespace Nubs\Sensible;
 
-use Habitat\Environment\Environment;
-use Nubs\Which\Locator as CommandLocator;
 use Symfony\Component\Process\ProcessBuilder;
 
 /**
- * Provides access to the user's preferred pager command.
- *
- * Pagers are found by a configurable list.
+ * Wraps the pager to execute it.
  */
 class Pager
 {
-    /** @type string[] The names of potential pagers. */
-    protected $_pagers;
-
-    /** @type \Habitat\Environment\Environment The environment variable wrapper. */
-    protected $_environment;
-
-    /** @type \Nubs\Which\Locator The command locator. */
-    protected $_commandLocator;
+    /** @type string The pager command to use. */
+    private $_pagerCommand;
 
     /**
-     * Initialize the pager loader and configure the options
+     * Initialize the pager command.
      *
      * @api
-     * @param \Nubs\Which\Locator $commandLocator The command locator.  This
-     *     helps locate commands using PATH.
-     * @param string|string[] $pagers The names to the potential pagers.
-     *     The first command in the list that can be located will be used.
-     * @param \Habitat\Environment\Environment $environment The environment
-     *     variable wrapper.  Defaults to null, which just uses the built-in
-     *     getenv.
+     * @param string $pagerCommand The pager command to use.
      */
-    public function __construct(CommandLocator $commandLocator, $pagers = ['sensible-pager', 'less', 'more'], Environment $environment = null)
+    public function __construct($pagerCommand)
     {
-        $this->_commandLocator = $commandLocator;
-        $this->_pagers = array_values((array)$pagers);
-        $this->_environment = $environment;
-    }
-
-    /**
-     * Get the path to the user's preferred pager.
-     *
-     * @api
-     * @return string|null The path to the user's preferred pager if one is
-     *     found.
-     */
-    public function get()
-    {
-        $pager = $this->_environment ? $this->_environment->getenv('PAGER') : getenv('PAGER');
-
-        return $pager ?: $this->_getDefaultPager();
+        $this->_pagerCommand = $pagerCommand;
     }
 
     /**
@@ -66,7 +34,7 @@ class Pager
      */
     public function viewFile(ProcessBuilder $processBuilder, $filePath)
     {
-        $proc = $processBuilder->setPrefix($this->get())->setArguments([$filePath])->getProcess();
+        $proc = $processBuilder->setPrefix($this->_pagerCommand)->setArguments([$filePath])->getProcess();
         $proc->setTty(true)->run();
 
         return $proc;
@@ -84,26 +52,9 @@ class Pager
      */
     public function viewData(ProcessBuilder $processBuilder, $data)
     {
-        $proc = $processBuilder->setPrefix($this->get())->setInput($data)->getProcess();
+        $proc = $processBuilder->setPrefix($this->_pagerCommand)->setInput($data)->getProcess();
         $proc->setTty(true)->run();
 
         return $proc;
-    }
-
-    /**
-     * Gets the path to the default pager using the locator if it is set.
-     *
-     * @return string|null The path to the default pager.
-     */
-    protected function _getDefaultPager()
-    {
-        foreach ($this->_pagers as $pager) {
-            $location = $this->_commandLocator->locate(basename($pager));
-            if ($location !== null) {
-                return $location;
-            }
-        }
-
-        return null;
     }
 }
