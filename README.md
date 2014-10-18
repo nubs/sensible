@@ -59,4 +59,59 @@ $browserFactory = new Nubs\Sensible\CommandFactory\BrowserFactory(
 $browser = $browserFactory->create();
 ```
 
+### Editor Factory
+The editor factory uses your `EDITOR` environment variable if set, otherwise it
+uses a command locator (via [which]) to determine which editors are available.
+The default list of editors is
+* sensible-editor
+* nano
+* vim
+* ed
+
+A simple example for creating a editor object:
+```php
+$commandLocatorFactory = new Nubs\Which\LocatorFactory\PlatformLocatorFactory();
+$editorFactory = new Nubs\Sensible\CommandFactory\EditorFactory(
+    $commandLocatorFactory->create()
+);
+$editor = $editorFactory->create();
+```
+
+If you want to override the default list of editors:
+```php
+$commandLocatorFactory = new Nubs\Which\LocatorFactory\PlatformLocatorFactory();
+$editorFactory = new Nubs\Sensible\CommandFactory\EditorFactory(
+    $commandLocatorFactory->create(),
+    ['my-favorite-editor', 'some-fallback-editor']
+);
+$editor = $editorFactory->create();
+```
+
+### Pager Factory
+The pager factory uses your `PAGER` environment variable if set, otherwise it
+uses a command locator (via [which]) to determine which pagers are available.
+The default list of pagers is
+* sensible-pager
+* less
+* more
+
+A simple example for creating a pager object:
+```php
+$commandLocatorFactory = new Nubs\Which\LocatorFactory\PlatformLocatorFactory();
+$pagerFactory = new Nubs\Sensible\CommandFactory\PagerFactory(
+    $commandLocatorFactory->create()
+);
+$pager = $pagerFactory->create();
+```
+
+If you want to override the default list of pagers:
+```php
+$commandLocatorFactory = new Nubs\Which\LocatorFactory\PlatformLocatorFactory();
+$pagerFactory = new Nubs\Sensible\CommandFactory\PagerFactory(
+    $commandLocatorFactory->create(),
+    ['my-favorite-pager', 'some-fallback-pager']
+);
+$pager = $pagerFactory->create();
+```
+
 [which]: https://github.com/nubs/which
