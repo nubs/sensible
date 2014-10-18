@@ -13,7 +13,7 @@ class BrowserFactory
 {
     use CommandFactoryTrait;
 
-    /** @type \Nubs\Sensible\Strategy\BrowserFactory The browser strategy. */
+    /** @type \Nubs\Sensible\Strategy\BrowserStrategy The browser strategy. */
     private $_strategy;
 
     /**

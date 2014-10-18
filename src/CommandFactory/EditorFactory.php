@@ -14,7 +14,7 @@ class EditorFactory
 {
     use CommandFactoryTrait;
 
-    /** @type \Nubs\Sensible\Strategy\PagerFactory The pager strategy. */
+    /** @type \Nubs\Sensible\Strategy\PagerStrategy The pager strategy. */
     private $_strategy;
 
     /**
