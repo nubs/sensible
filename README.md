@@ -22,3 +22,41 @@ following command:
 ```bash
 composer require nubs/sensible
 ```
+
+## Supported Program Types
+This library supports opening a text editor (like vim), a pager (like more),
+and a browser (like firefox).
+
+## Program Factories
+The recommended way to initialize one of the supported program loaders is to
+use the included factories.
+
+### Browser Factory
+The browser factory uses a command locator (via [which]) to determine which
+browsers are available.  The default list of browsers is
+* sensible-browser
+* firefox
+* chromium-browser
+* chrome
+* elinks
+
+A simple example for creating a browser object:
+```php
+$commandLocatorFactory = new Nubs\Which\LocatorFactory\PlatformLocatorFactory();
+$browserFactory = new Nubs\Sensible\CommandFactory\BrowserFactory(
+    $commandLocatorFactory->create()
+);
+$browser = $browserFactory->create();
+```
+
+If you want to override the default list of browsers:
+```php
+$commandLocatorFactory = new Nubs\Which\LocatorFactory\PlatformLocatorFactory();
+$browserFactory = new Nubs\Sensible\CommandFactory\BrowserFactory(
+    $commandLocatorFactory->create(),
+    ['my-favorite-browser', 'some-fallback-browser']
+);
+$browser = $browserFactory->create();
+```
+
+[which]: https://github.com/nubs/which
