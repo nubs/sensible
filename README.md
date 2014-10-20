@@ -114,4 +114,58 @@ $pagerFactory = new Nubs\Sensible\CommandFactory\PagerFactory(
 $pager = $pagerFactory->create();
 ```
 
+## Using the programs
+Once you've created the program type with its strategy for locating the
+sensible command for the user, you can use it to work with files/data/etc.
+
+### Browser
+A browser can be executed to load a supported URI.  For example:
+```php
+$browser->viewURI(
+    new Symfony\Component\Process\ProcessBuilder(), 
+    'http://www.google.com'
+);
+```
+
+### Editor
+The editor can be used to edit files.  For example:
+```php
+$process = $editor->editFile(
+    new Symfony\Component\Process\ProcessBuilder(), 
+    '/path/to/a/file'
+);
+if ($process->isSuccessful()) {
+    // continue
+}
+```
+
+There is also a convenient shorthand for editing a string in an editor by means
+of a temporary file.  For example:
+```php
+$updatedMessage = $editor->editData(
+    new Symfony\Component\Process\ProcessBuilder(), 
+    'a message'
+);
+```
+
+This will return the input unaltered if the process does not exit successfully.
+
+### Pager
+The pager passes the file or string to the configured pager for convenient
+viewing.  For example, for a file source:
+```php
+$process = $pager->viewFile(
+    new Symfony\Component\Process\ProcessBuilder(), 
+    '/path/to/a/file'
+);
+```
+
+Or for a string source:
+```php
+$process = $pager->viewData(
+    new Symfony\Component\Process\ProcessBuilder(), 
+    'a message'
+);
+```
+
 [which]: https://github.com/nubs/which
