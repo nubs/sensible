@@ -8,25 +8,26 @@
     "packages": [
         {
             "name": "nubs/which",
-            "version": "v1.0.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nubs/which.git",
-                "reference": "888d271d3776b7d989698b5e045aa269db29c47e"
+                "reference": "ae12e709c7737235eb06f3f9880389081dfe6df4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nubs/which/zipball/888d271d3776b7d989698b5e045aa269db29c47e",
-                "reference": "888d271d3776b7d989698b5e045aa269db29c47e",
+                "url": "https://api.github.com/repos/nubs/which/zipball/ae12e709c7737235eb06f3f9880389081dfe6df4",
+                "reference": "ae12e709c7737235eb06f3f9880389081dfe6df4",
                 "shasum": ""
             },
             "require": {
-                "php": "~5.4"
+                "php": "~5.4 || ~7.0"
             },
             "require-dev": {
                 "brianium/habitat": "~1.0",
                 "phpunit/phpunit": "~4.0",
-                "squizlabs/php_codesniffer": "~1.5"
+                "satooshi/php-coveralls": "~0.6.1",
+                "squizlabs/php_codesniffer": "~2.3"
             },
             "suggest": {
                 "brianium/habitat": "For better access to environment variables (e.g., for mocking)."
@@ -57,7 +58,7 @@
                 "which",
                 "windows"
             ],
-            "time": "2014-07-10 00:07:25"
+            "time": "2015-04-25 18:02:19"
         }
     ],
     "packages-dev": [
@@ -261,16 +262,16 @@
         },
         {
             "name": "phpspec/prophecy",
-            "version": "1.4.0",
+            "version": "v1.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpspec/prophecy.git",
-                "reference": "8724cd239f8ef4c046f55a3b18b4d91cc7f3e4c5"
+                "reference": "3132b1f44c7bf2ec4c7eb2d3cb78fdeca760d373"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/8724cd239f8ef4c046f55a3b18b4d91cc7f3e4c5",
-                "reference": "8724cd239f8ef4c046f55a3b18b4d91cc7f3e4c5",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/3132b1f44c7bf2ec4c7eb2d3cb78fdeca760d373",
+                "reference": "3132b1f44c7bf2ec4c7eb2d3cb78fdeca760d373",
                 "shasum": ""
             },
             "require": {
@@ -317,7 +318,7 @@
                 "spy",
                 "stub"
             ],
-            "time": "2015-03-27 19:31:25"
+            "time": "2015-04-27 22:15:08"
         },
         {
             "name": "phpunit/php-code-coverage",
