@@ -12,7 +12,7 @@ A PHP library for finding sensible user programs, like editor, pager, and browse
 [![Dependency Status](https://www.versioneye.com/user/projects/53866d7014c15895cb000053/badge.svg?style=flat)](https://www.versioneye.com/user/projects/53866d7014c15895cb000053)
 
 ## Requirements
-This library requires PHP 5.4, or newer.
+This library requires PHP 5.5, or newer.
 
 ## Installation
 This package uses [composer](https://getcomposer.org) so you can just add
