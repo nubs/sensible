@@ -169,7 +169,8 @@ $process = $pager->viewData(
 ```
 
 ## CLI Interface
-There is also a CLI interface for Linux systems that imitates Ubuntu's `sensible-*` commands. It is available as [`nubs/sensible-cli`][sensible-cli].
+There is also a CLI interface for Linux systems that imitates Ubuntu's
+`sensible-*` commands. It is available as [`nubs/sensible-cli`][sensible-cli].
 
 ## License
 sensible is licensed under the MIT license.  See [LICENSE](LICENSE) for the
