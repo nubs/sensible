@@ -25,7 +25,7 @@
         "nubs/which": "For locating commands in PATH rather than using absolute paths."
     },
     "autoload": {
-        "psr-4": { 
+        "psr-4": {
             "Nubs\\Sensible\\": "src"
         }
     }
