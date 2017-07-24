@@ -1,12 +1,12 @@
 <?php
 namespace Nubs\Sensible;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \Nubs\Sensible\Pager
  */
-class PagerTest extends PHPUnit_Framework_TestCase
+class PagerTest extends TestCase
 {
     /**
      * Verify that viewFile works.

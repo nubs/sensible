@@ -1,7 +1,7 @@
 <?php
 namespace Nubs\Sensible\CommandFactory;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \Nubs\Sensible\CommandFactory\BrowserFactory
@@ -9,7 +9,7 @@ use PHPUnit_Framework_TestCase;
  * @uses \Nubs\Sensible\Strategy\CommandLocatorStrategy
  * @uses \Nubs\Sensible\Browser::__construct
  */
-class BrowserFactoryTest extends PHPUnit_Framework_TestCase
+class BrowserFactoryTest extends TestCase
 {
     private $_commandLocator;
 

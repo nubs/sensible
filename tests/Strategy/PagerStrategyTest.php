@@ -1,12 +1,12 @@
 <?php
 namespace Nubs\Sensible\Strategy;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \Nubs\Sensible\Strategy\PagerStrategy
  */
-class PagerStrategyTest extends PHPUnit_Framework_TestCase
+class PagerStrategyTest extends TestCase
 {
     private $_environment;
     private $_commandLocator;

@@ -1,12 +1,12 @@
 <?php
 namespace Nubs\Sensible;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \Nubs\Sensible\Browser
  */
-class BrowserTest extends PHPUnit_Framework_TestCase
+class BrowserTest extends TestCase
 {
     /**
      * Verify that viewURI works.

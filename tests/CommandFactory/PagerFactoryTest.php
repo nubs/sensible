@@ -1,7 +1,7 @@
 <?php
 namespace Nubs\Sensible\CommandFactory;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \Nubs\Sensible\CommandFactory\PagerFactory
@@ -11,7 +11,7 @@ use PHPUnit_Framework_TestCase;
  * @uses \Nubs\Sensible\Strategy\ListStrategy
  * @uses \Nubs\Sensible\Pager::__construct
  */
-class PagerFactoryTest extends PHPUnit_Framework_TestCase
+class PagerFactoryTest extends TestCase
 {
     private $_environment;
     private $_commandLocator;

@@ -1,12 +1,12 @@
 <?php
 namespace Nubs\Sensible\Strategy;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \Nubs\Sensible\Strategy\CommandLocatorStrategy
  */
-class CommandLocatorStrategyTest extends PHPUnit_Framework_TestCase
+class CommandLocatorStrategyTest extends TestCase
 {
     private $_commandLocator;
 

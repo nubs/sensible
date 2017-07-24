@@ -1,7 +1,7 @@
 <?php
 namespace Nubs\Sensible\CommandFactory;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \Nubs\Sensible\CommandFactory\EditorFactory
@@ -11,7 +11,7 @@ use PHPUnit_Framework_TestCase;
  * @uses \Nubs\Sensible\Strategy\ListStrategy
  * @uses \Nubs\Sensible\Editor::__construct
  */
-class EditorFactoryTest extends PHPUnit_Framework_TestCase
+class EditorFactoryTest extends TestCase
 {
     private $_environment;
     private $_commandLocator;

@@ -1,12 +1,12 @@
 <?php
 namespace Nubs\Sensible;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \Nubs\Sensible\Editor
  */
-class EditorTest extends PHPUnit_Framework_TestCase
+class EditorTest extends TestCase
 {
     /**
      * Verify that editFile works.

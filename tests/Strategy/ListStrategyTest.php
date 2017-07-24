@@ -1,12 +1,12 @@
 <?php
 namespace Nubs\Sensible\Strategy;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \Nubs\Sensible\Strategy\ListStrategy
  */
-class ListStrategyTest extends PHPUnit_Framework_TestCase
+class ListStrategyTest extends TestCase
 {
     /**
      * Verify that the basic behavior works.

@@ -2,15 +2,18 @@
 <?php
 require 'vendor/autoload.php';
 
+use PHPUnit\Util\Configuration as PHPUnitConfiguration;
+use PHPUnit\TextUI\TestRunner as PHPUnitTestRunner;
+
 $phpcsCLI = new PHP_CodeSniffer_CLI();
 $phpcsViolations = $phpcsCLI->process(['standard' => ['PSR1'], 'files' => ['src', 'tests', 'build.php']]);
 if ($phpcsViolations > 0) {
     exit(1);
 }
 
-$phpunitConfiguration = PHPUnit_Util_Configuration::getInstance(__DIR__ . '/phpunit.xml');
+$phpunitConfiguration = PHPUnitConfiguration::getInstance(__DIR__ . '/phpunit.xml');
 $phpunitArguments = ['coverageHtml' => __DIR__ . '/coverage', 'configuration' => $phpunitConfiguration];
-$testRunner = new PHPUnit_TextUI_TestRunner();
+$testRunner = new PHPUnitTestRunner();
 $result = $testRunner->doRun($phpunitConfiguration->getTestSuiteConfiguration(), $phpunitArguments, false);
 if (!$result->wasSuccessful()) {
     exit(1);

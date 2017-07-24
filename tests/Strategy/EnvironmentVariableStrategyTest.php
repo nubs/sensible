@@ -1,12 +1,12 @@
 <?php
 namespace Nubs\Sensible\Strategy;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \Nubs\Sensible\Strategy\EnvironmentVariableStrategy
  */
-class EnvironmentVariableStrategyTest extends PHPUnit_Framework_TestCase
+class EnvironmentVariableStrategyTest extends TestCase
 {
     private $_environment;
 
